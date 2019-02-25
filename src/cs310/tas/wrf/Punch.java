@@ -5,31 +5,31 @@
  */
 package cs310.tas.wrf;
 
-import cs310.tas.wrf.Badge;
+import java.sql.Timestamp;
 import java.util.*;
 import java.text.*;
 
 /**
  *
- * @author Matt Denman and William Penwell
+ * @author Matt Denman and William Penwell, Adam Stith
  */
 public class Punch {
     
-    private Badge badge;// = new Badge(String, String);
+    private String badgeID;
     private int terminalID;
     private int punchTypeID;
     private int id;
-    private String description;
-    private long originalTimeStamp;
+    private Timestamp originalTimeStamp;
    
     //make a private Gregoriancalendar object "timestamp" or "cal"  here
         
-    Punch (Badge badge, int terminalID, int punchTypeID, long startingTimeStamp){
+    Punch (int id, int terminalID, String badgeID, Timestamp originalTimeStamp, int punchTypeID) {
         
-        this.badge = badge;
+        this.id = id;
         this.terminalID = terminalID;
-        this.punchTypeID = punchTypeID;
+        this.badgeID = badgeID;
         this.originalTimeStamp = originalTimeStamp;
+        this.punchTypeID = punchTypeID;
         /*
         instantiate our private GregorianCalendar object here by setting it to the current time
         according to https://www.geeksforgeeks.org/java-util-gregoriancalendar-class-java/ :
@@ -41,12 +41,12 @@ public class Punch {
         
     }
     
-    public String printOriginalTimeSstamp() {
+    public String printOriginalTimestamp() {
         //if we set a class variable of type GregorianCalendar , we can just use a command to "getTheTimeAndDate" from "timestamp" and return that or print it.
         //I think we need to also have a class that returns the "timestamp" itself as a gregorian calendar object. like  "public GregorianCalendare methodname(){pass the caller the gregorianCalendar object}
         String punchResults = "";
         GregorianCalendar cal = new GregorianCalendar();
-        cal.setTimeInMillis(this.originalTimeStamp);
+        //cal.setTimeInMillis(this.originalTimeStamp);
         Date date = cal.getTime();
         switch(this.punchTypeID){
             case 0:
@@ -62,7 +62,7 @@ public class Punch {
                 System.out.println("ERROR");
         }
         
-        String originalTimestamptoString = "#" + this.badge + punchResults + " " + date;
+        String originalTimestamptoString = "#" + getBadgeID() + punchResults + " " + date;
         return originalTimestamptoString;
          
     }
@@ -70,12 +70,12 @@ public class Punch {
     public String printAdjustedTimeStamp() {
         return "";
     }
-    
-    Punch (int id, String description) {
-        
-        this.id = id;
-        this.description = description;
+
+    public String getBadgeID() {
+        return badgeID;
     }
+    
+    
     
 }
 
