@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.util.ArrayList;
 
 /**
  *
@@ -79,8 +80,9 @@ public class TASDatabase {
         
     }
     
-    public void getBadge(String badgeID) {
+    public Badge getBadge(String badgeID) {
         
+        ArrayList<String> list = new ArrayList<>();
         
         try {
             
@@ -114,7 +116,7 @@ public class TASDatabase {
                         
                         for (int i = 1; i <= columnCount; i++) {
                             
-                            System.out.println(resultset.getString(i));
+                            list.add(resultset.getString(i));
                             
                         }
                         
@@ -137,7 +139,7 @@ public class TASDatabase {
                 hasresults = pstSelect.getMoreResults();
 
             }
-
+            
         }
         
         catch (Exception e) {
@@ -161,9 +163,15 @@ public class TASDatabase {
             
         }
         
+        Badge b = new Badge(list.get(0),list.get(1));
+        
+        return b;
+        
     }
     
     public void getPunch(String punchID) {
+        
+        ArrayList<String> list = new ArrayList<>();
         
         try {
         
@@ -199,7 +207,7 @@ public class TASDatabase {
                         
                         for (int i = 1; i <= columnCount; i++) {
                             
-                            System.out.println(resultset.getString(i));
+                            list.add(resultset.getString(i));
                             
                         }
                         
@@ -222,6 +230,8 @@ public class TASDatabase {
                 hasresults = pstSelect.getMoreResults();
 
             }
+            
+            
 
         }
         
@@ -249,6 +259,8 @@ public class TASDatabase {
     }
     
     public void getShift(int shiftID) {
+        
+        ArrayList<String> list = new ArrayList<>();
         
         try {
         
