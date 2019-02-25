@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 /**
@@ -75,14 +77,17 @@ public class TASDatabase {
         }  
         
         catch (Exception e) {
+            
             System.err.println(e.toString());
+        
         }
         
     }
     
     public Badge getBadge(String badgeID) {
         
-        ArrayList<String> list = new ArrayList<>();
+        String id = null;
+        String description = null;
         
         try {
             
@@ -114,11 +119,8 @@ public class TASDatabase {
                     
                     while(resultset.next()) {
                         
-                        for (int i = 1; i <= columnCount; i++) {
-                            
-                            list.add(resultset.getString(i));
-                            
-                        }
+                        id = resultset.getString(1);
+                        description = resultset.getString(2);
                         
                     }
                         
@@ -163,15 +165,17 @@ public class TASDatabase {
             
         }
         
-        Badge b = new Badge(list.get(0),list.get(1));
+        Badge b = new Badge(id, description);
         
         return b;
         
     }
     
-    public void getPunch(String punchID) {
+    public Punch getPunch(int punchID) {
         
-        ArrayList<String> list = new ArrayList<>();
+        int id = 0, terminalID = 0, punchTypeID = 0;
+        String badgeID = "";
+        Timestamp originalTimestamp = null;
         
         try {
         
@@ -204,13 +208,13 @@ public class TASDatabase {
                     resultset = pstSelect.getResultSet();
                     
                     while(resultset.next()) {
-                        
-                        for (int i = 1; i <= columnCount; i++) {
-                            
-                            list.add(resultset.getString(i));
-                            
-                        }
-                        
+                         
+                        id = resultset.getInt(1);
+                        terminalID = resultset.getInt(2);
+                        badgeID = resultset.getString(3);
+                        originalTimestamp = resultset.getTimestamp(4);
+                        punchTypeID = resultset.getInt(5);
+  
                     }
                         
                 }
@@ -230,8 +234,6 @@ public class TASDatabase {
                 hasresults = pstSelect.getMoreResults();
 
             }
-            
-            
 
         }
         
@@ -256,17 +258,30 @@ public class TASDatabase {
             
         }
         
+        Punch p = new Punch(id, terminalID, badgeID, originalTimestamp, punchTypeID);
+        
+        return p;
+        
     }
     
-    public void getShift(int shiftID) {
+    public Shift getShift(int shiftID) {
         
-        ArrayList<String> list = new ArrayList<>();
+        String description = null; 
+        Time startingTime = null;
+        Time stoppingTime = null;
+        Time lunchStart = null;
+        Time lunchStop = null;
+
+        int lunchDeduct = 0;
+        int interval = 0;
+        int gracePeriod = 0;
+        int dock = 0;
         
         try {
         
             /* Prepare Select Query */
                 
-            query = "SELECT id,description,start,stop,`interval`,graceperiod,"
+            query = "SELECT description,start,stop,`interval`,graceperiod,"
                     + "lunchstart,lunchstop,lunchdeduct FROM tas.shift WHERE id"
                     + " = "+ shiftID;
 
@@ -295,12 +310,16 @@ public class TASDatabase {
                     
                     while(resultset.next()) {
                         
-                        for (int i = 1; i <= columnCount; i++) {
-                            
-                            System.out.println(resultset.getString(i));
-                            
-                        }
-                        
+                       description = resultset.getString(1);
+                       startingTime = resultset.getTime(2); 
+                       interval = resultset.getInt(3);
+                       gracePeriod = resultset.getInt(4);
+                       dock = resultset.getInt(5);
+                       stoppingTime = resultset.getTime(6); 
+                       lunchStart = resultset.getTime(7);
+                       lunchStop = resultset.getTime(8);
+                       lunchDeduct = resultset.getInt(9);
+                       
                     }
                         
                 }
@@ -344,16 +363,33 @@ public class TASDatabase {
             
         }
         
+        Shift s = new Shift(description, startingTime, interval, gracePeriod, dock, stoppingTime, lunchStart, lunchStop, lunchDeduct);
+        
+        return s;
+        
     }
     
-    public void getShift(String badgeID) {
+    public Shift getShift(Badge badge) {
+        
+        String description = null; 
+        Time startingTime = null;
+        Time stoppingTime = null;
+        Time lunchStart = null;
+        Time lunchStop = null;
+
+        int lunchDeduct = 0;
+        int interval = 0;
+        int gracePeriod = 0;
+        int dock = 0;
+        
+        Shift s = null;
         
         try {
         
             /* Prepare Select Query */
                 
             query = "SELECT shiftid FROM tas.employee WHERE badgeid = "
-                    + badgeID;
+                    + badge.getID();
 
             pstSelect = conn.prepareStatement(query);
                 
@@ -374,9 +410,9 @@ public class TASDatabase {
                     
                     resultset.next();
    
-                    getShift(Integer.parseInt(resultset.getString(1)));   
+                    s = getShift(resultset.getInt(1));    
 
-        }
+                    }
         
         catch (Exception e) {
             
@@ -398,6 +434,8 @@ public class TASDatabase {
             } catch (Exception e) {} }
             
         }
+        
+        return s;
         
     }
     
