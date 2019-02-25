@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tas_sp19;
+package cs310.tas.wrf;
 
 /**
  *
@@ -25,5 +25,13 @@ public class Badge {
 
     public String toString() {
         return ("#" + id + "(" + name + ")");
+    }
+    
+    public String getID(){
+        return id;
+    }
+    
+    public String getName(){
+        return name;
     }
 }
