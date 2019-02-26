@@ -21,7 +21,7 @@ public class Punch {
     private int id;
     private Timestamp originalTimeStamp;
    
-    //make a private Gregoriancalendar object "timestamp" or "cal"  here
+   
         
     Punch (int id, int terminalID, String badgeID, Timestamp originalTimeStamp, int punchTypeID) {
         
@@ -30,39 +30,44 @@ public class Punch {
         this.badgeID = badgeID;
         this.originalTimeStamp = originalTimeStamp;
         this.punchTypeID = punchTypeID;
-        /*
-        instantiate our private GregorianCalendar object here by setting it to the current time
-        according to https://www.geeksforgeeks.org/java-util-gregoriancalendar-class-java/ :
-        it looks as if using the constructor with empty paremeters is correct.
-        However, if you declare the Gregorian calendar object above, then you don't need to re-delcare the class type here so you can just use
-        "cal = new GregorianCalendar()" or "timestamp = new GregorianCalendar()"
-        */
      
         
     }
     
     public String printOriginalTimestamp() {
-        //if we set a class variable of type GregorianCalendar , we can just use a command to "getTheTimeAndDate" from "timestamp" and return that or print it.
-        //I think we need to also have a class that returns the "timestamp" itself as a gregorian calendar object. like  "public GregorianCalendare methodname(){pass the caller the gregorianCalendar object}
+        
         String punchResults = "";
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTimeInMillis(originalTimeStamp.getTime());
-        Date date = cal.getTime();
+        //Date date = cal.getTime();
+        
         switch(this.punchTypeID){
             case 0:
-                punchResults = "CLOCKED OUT: ";
+                punchResults = "CLOCKED OUT:";
                 break;
             case 1:
-                punchResults = "CLOCKED IN: ";
+                punchResults = "CLOCKED IN:";
                 break;
             case 2:
-                punchResults = "TIMED OUT: ";
+                punchResults = "TIMED OUT:";
                 break;
             default:
                 System.out.println("ERROR");
         }
         
-        String originalTimestamptoString = "#" + getBadgeID() + punchResults + " " + date;
+        //String originalTimestamptoString = "#" + getBadgeID() + punchResults + " " + date;
+        
+        /*
+        A pattern is created for the format according to the documentation on SimpleDateFormat. 
+        Then an output string is constructed using the cal.getTime(). Then the output string is built,
+        .toUppercase() is used to ensure the day of the week is capitalized.
+        */
+        String pattern = "EEE MM/dd/yyyy HH:mm:ss";
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+        String formattedDate = sdf.format(cal.getTime()).toUpperCase();
+        
+        String originalTimestamptoString = "#" + getBadgeID() + " " + punchResults + " " + formattedDate;
+
         return originalTimestamptoString;
          
     }
