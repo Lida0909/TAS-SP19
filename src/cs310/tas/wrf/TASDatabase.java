@@ -93,7 +93,7 @@ public class TASDatabase {
             
             /* Prepare Select Query */
                 
-            query = "SELECT id,description FROM badge WHERE id = "+ badgeID;
+            query = "SELECT id,description FROM badge WHERE id = '"+ badgeID +"'";
 
             pstSelect = conn.prepareStatement(query);
                 
@@ -311,14 +311,13 @@ public class TASDatabase {
                     while(resultset.next()) {
                         
                        description = resultset.getString(1);
-                       startingTime = resultset.getTime(2); 
-                       interval = resultset.getInt(3);
-                       gracePeriod = resultset.getInt(4);
-                       dock = resultset.getInt(5);
-                       stoppingTime = resultset.getTime(6); 
-                       lunchStart = resultset.getTime(7);
-                       lunchStop = resultset.getTime(8);
-                       lunchDeduct = resultset.getInt(9);
+                       startingTime = resultset.getTime(2);
+                       stoppingTime = resultset.getTime(3);
+                       interval = resultset.getInt(4);
+                       gracePeriod = resultset.getInt(5);                                           
+                       lunchStart = resultset.getTime(6);
+                       lunchStop = resultset.getTime(7);
+                       lunchDeduct = resultset.getInt(8);
                        
                     }
                         
@@ -388,8 +387,8 @@ public class TASDatabase {
         
             /* Prepare Select Query */
                 
-            query = "SELECT shiftid FROM tas.employee WHERE badgeid = "
-                    + badge.getID();
+            query = "SELECT shiftid FROM tas.employee WHERE badgeid = '"
+                    + badge.getID() + "'";
 
             pstSelect = conn.prepareStatement(query);
                 
