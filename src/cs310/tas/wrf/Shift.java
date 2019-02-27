@@ -2,6 +2,7 @@
 package cs310.tas.wrf;
 
 import java.sql.Time;
+import java.text.SimpleDateFormat;
 
 public class Shift {
     
@@ -16,6 +17,8 @@ public class Shift {
     private int gracePeriod;
     private int dock;
     
+    private SimpleDateFormat hoursMinutes;
+    
     public Shift(String description, Time startTime,int interval, int gracePeriod,
             int dock, Time stopTime, Time lunchStart, Time lunchStop, int lunchDeduct) {
         
@@ -29,6 +32,7 @@ public class Shift {
         this.gracePeriod = gracePeriod;
         this.dock = dock;
         
+        hoursMinutes = new SimpleDateFormat("HH:mm");
     }
     
     public Time getStartingTime() {
@@ -114,8 +118,8 @@ public class Shift {
     public String toString() {
         
        StringBuilder s = new StringBuilder();
-       s.append(description).append(": ").append(startingTime).append(" - ");
-       s.append(stoppingTime).append(" (").append(totalShiftHours()).append("); Lunch: ");
+       s.append(description).append(": ").append(hoursMinutes.format(startingTime)).append(" - ");
+       s.append(hoursMinutes.format(stoppingTime)).append(" (").append(totalShiftHours()).append("); Lunch: ");
        s.append(lunchStart).append(" - ").append(lunchStop).append(" (");
        s.append(totalLunchTime()).append(")");
        
