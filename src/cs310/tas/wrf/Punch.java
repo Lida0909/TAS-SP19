@@ -2,6 +2,7 @@ package cs310.tas.wrf;
 
 import java.sql.Timestamp;
 import java.util.*;
+import java.text.*;
 
 /**
  *
@@ -14,7 +15,7 @@ public class Punch {
     private int punchTypeID;
     private int id;
     private Timestamp originalTimeStamp;
-        
+    
     Punch (int id, int terminalID, String badgeID, Timestamp originalTimeStamp, int punchTypeID) {
         
         this.id = id;
@@ -22,33 +23,43 @@ public class Punch {
         this.badgeID = badgeID;
         this.originalTimeStamp = originalTimeStamp;
         this.punchTypeID = punchTypeID;
-     
+            
     }
     
     public String printOriginalTimestamp() {
-        //if we set a class variable of type GregorianCalendar , we can just use a command to "getTheTimeAndDate" from "timestamp" and return that or print it.
-        //I think we need to also have a class that returns the "timestamp" itself as a gregorian calendar object. like  "public GregorianCalendare methodname(){pass the caller the gregorianCalendar object}
+        
         String punchResults = "";
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTimeInMillis(originalTimeStamp.getTime());
-        Date date = cal.getTime();
+        //Date date = cal.getTime();
         
         switch(this.punchTypeID){
             case 0:
-                punchResults = "CLOCKED OUT: ";
+                punchResults = "CLOCKED OUT:";
                 break;
             case 1:
-                punchResults = "CLOCKED IN: ";
+                punchResults = "CLOCKED IN:";
                 break;
             case 2:
-                punchResults = "TIMED OUT: ";
+                punchResults = "TIMED OUT:";
                 break;
             default:
                 System.out.println("ERROR");
         }
         
-        String originalTimestamptoString = "#" + getBadgeID() + punchResults + " " + date;
+        //String originalTimestamptoString = "#" + getBadgeID() + punchResults + " " + date;
         
+        /*
+        A pattern is created for the format according to the documentation on SimpleDateFormat. 
+        Then an output string is constructed using the cal.getTime(). Then the output string is built,
+        .toUppercase() is used to ensure the day of the week is capitalized.
+        */
+        String pattern = "EEE MM/dd/yyyy HH:mm:ss";
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+        String formattedDate = sdf.format(cal.getTime()).toUpperCase();
+        
+        String originalTimestamptoString = "#" + getBadgeID() + " " + punchResults + " " + formattedDate;
+
         return originalTimestamptoString;
          
     }
