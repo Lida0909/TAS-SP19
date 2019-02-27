@@ -5,9 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 
 /**
  *
@@ -93,7 +91,8 @@ public class TASDatabase {
             
             /* Prepare Select Query */
                 
-            query = "SELECT id,description FROM badge WHERE id = '"+ badgeID +"'";
+            query = "SELECT id,description FROM badge WHERE id = '"
+                    + badgeID +"'";
 
             pstSelect = conn.prepareStatement(query);
                 
@@ -258,7 +257,8 @@ public class TASDatabase {
             
         }
         
-        Punch p = new Punch(id, terminalID, badgeID, originalTimestamp, punchTypeID);
+        Punch p = new Punch(id, terminalID, badgeID, originalTimestamp,
+                punchTypeID);
         
         return p;
         
@@ -373,24 +373,14 @@ public class TASDatabase {
         
         Shift s = new Shift(description, shiftStartHour, shiftStartMinute, 
                 interval, gracePeriod, dock, shiftStopHour, shiftStopMinute,
-                lunchStartHour, lunchStartMinute, lunchStopHour, lunchStopMinute, lunchDeduct);
+                lunchStartHour, lunchStartMinute, lunchStopHour,
+                lunchStopMinute, lunchDeduct);
         
         return s;
         
     }
     
     public Shift getShift(Badge badge) {
-        
-        String description = null; 
-        Time startingTime = null;
-        Time stoppingTime = null;
-        Time lunchStart = null;
-        Time lunchStop = null;
-
-        int lunchDeduct = 0;
-        int interval = 0;
-        int gracePeriod = 0;
-        int dock = 0;
         
         Shift s = null;
         
