@@ -361,9 +361,7 @@ public class TASDatabase {
             } catch (Exception e) {} }
             
         }
-        //String description, int startHour, int startMin,int interval, int gracePeriod,
-            //int dock, int stopHour, int stopMin, int lunchStartHour, int lunchStartMin,
-            //int lunchStopHour, int lunchStopMin, int lunchDeduct)
+        
         int shiftStartHour = Integer.parseInt(startingTime[0]);
         int shiftStartMinute = Integer.parseInt(startingTime[1]);
         int shiftStopHour = Integer.parseInt(stoppingTime[0]);
