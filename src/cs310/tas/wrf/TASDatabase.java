@@ -16,7 +16,7 @@ public class TASDatabase {
     Connection conn;
     
     String server = ("jdbc:mysql://localhost/tas");
-    String username = "root";
+    String username = "tasuser";
     String password = "CS310";
     
     PreparedStatement pstSelect = null, pstUpdate = null;
