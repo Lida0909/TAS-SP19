@@ -33,64 +33,86 @@ public class Shift {
         
     }
     
+    
+    /* Getter Methods */
+    
     public LocalTime getStartingTime() {
         return startingTime;
     }
-
-    public void setStartingTime(LocalTime startingTime) {
-        this.startingTime = startingTime;
+    
+    public int getStartingTimeHour() {
+        return getStartingTime().getHour();
     }
-
+    
+    public int getStartingTimeMinutes() {
+        return getStartingTime().getMinute();
+    }
+    
     public LocalTime getStoppingTime() {
         return stoppingTime;
+    }
+    
+    public int getStoppingTimeHour() {
+        return getStoppingTime().getHour();
+    }
+    
+    public int getStoppingTimeMinutes() {
+        return getStoppingTime().getMinute();
+    }
+    
+    public LocalTime getLunchStart() {
+        return lunchStart;
+    }
+    
+    public LocalTime getLunchStop() {
+        return lunchStop;
+    }
+    
+    public LocalTime getInterval() {
+        return interval;
+    }
+    
+    public LocalTime getlunchDeduct() {
+        return lunchDeduct;
+    }
+    
+    public LocalTime getGracePeriod() {
+        return gracePeriod;
+    }
+    
+    public LocalTime getDock() {
+        return dock;
+    }
+    
+    
+    /* Setter Methods */
+    
+    public void setStartingTime(LocalTime startingTime) {
+        this.startingTime = startingTime;
     }
 
     public void setStoppingTime(LocalTime stoppigTime) {
         this.stoppingTime = stoppigTime;
     }
 
-    public LocalTime getLunchStart() {
-        return lunchStart;
-    }
-
     public void setLunchStart(LocalTime lunchStart) {
         this.lunchStart = lunchStart;
-    }
-
-    public LocalTime getLunchStop() {
-        return lunchStop;
     }
 
     public void setLunchStop(LocalTime lunchStop) {
         this.lunchStop = lunchStop;
     }
 
-    public LocalTime lunchDeduct() {
-        return lunchDeduct;
-    }
-
     public void setLunchDeduct(LocalTime lunchDeduct) {
         this.lunchDeduct = lunchDeduct;
-    }
-
-    public LocalTime getInterval() {
-        return interval;
     }
 
     public void setInterval(LocalTime interval) {
         this.interval = interval;
     }
 
-    public LocalTime getGracePeriod() {
-        return gracePeriod;
-    }
-
     public void setGracePeriod(LocalTime gracePeriod) {
         this.gracePeriod = gracePeriod;
-    }
-
-    public LocalTime getDock() {
-        return dock;
     }
 
     public void setDock(LocalTime dock) {
@@ -99,32 +121,32 @@ public class Shift {
     
     
     public int totalShiftHours() {
-       //int totalStartTimeMinutes = (startingTime.getHours()*60) + startingTime.getMinutes();
-       //int totalStopTimeMinutes = (stoppingTime.getHours()*60) + stoppingTime.getMinutes();
-       //return (totalStopTimeMinutes - totalStartTimeMinutes);
-       return 510;
+        
+       int totalStartTimeMinutes = (getStartingTime().getHour()*60) + getStartingTime().getMinute();
+       int totalStopTimeMinutes = (getStoppingTime().getHour()*60) + getStoppingTime().getMinute();
+       return (totalStopTimeMinutes - totalStartTimeMinutes);
        
     }
     
     public int totalLunchTime() {
-        return 30;
+        
+        int totalLunchStartMinutes = (getLunchStart().getHour()*60) + getLunchStart().getMinute();
+        int totalLunchStopMinutes = (getLunchStop().getHour()*60) + getLunchStop().getMinute();
+        return (totalLunchStopMinutes - totalLunchStartMinutes);
+        
     }
-    
-    //"Shift 1: 07:00 - 15:30 (510 minutes); Lunch: 12:00 - 12:30 (30 minutes)"
     
     @Override
     public String toString() {
         
        StringBuilder s = new StringBuilder();
-       s.append(description).append(": ").append(startingTime).append(" - ");
-       s.append(stoppingTime).append(" (").append(totalShiftHours()).append("); Lunch: ");
-       s.append(lunchStart).append(" - ").append(lunchStop).append(" (");
+       s.append(description).append(": ").append(startingTime.toString()).append(" - ");
+       s.append(stoppingTime.toString()).append(" (").append(totalShiftHours()).append("); Lunch: ");
+       s.append(lunchStart.toString()).append(" - ").append(lunchStop.toString()).append(" (");
        s.append(totalLunchTime()).append(")");
        
        return s.toString();
         
-    }
-    
+    }   
     
 }
-
