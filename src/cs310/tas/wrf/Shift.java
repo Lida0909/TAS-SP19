@@ -12,7 +12,7 @@ public class Shift {
     private LocalTime lunchStart;
     private LocalTime lunchStop;
     
-    private LocalTime lunchDeduct;
+    private int lunchDeduct;
     private LocalTime interval;
     private LocalTime gracePeriod;
     private LocalTime dock;
@@ -22,11 +22,11 @@ public class Shift {
             int lunchStopHour, int lunchStopMin, int lunchDeduct) {
         
         this.description = description;
-        this.startingTime = LocalTime.of(startHour, startMin, 0);
-        this.stoppingTime = LocalTime.of(stopHour, stopMin, 0);
-        this.lunchStart = LocalTime.of(lunchStartHour, lunchStartMin, 0);
-        this.lunchStop = LocalTime.of(lunchStopHour, lunchStopMin, 0);
-        this.lunchDeduct = LocalTime.of(0,lunchDeduct, 0);
+        this.startingTime = LocalTime.of(startHour, startMin);
+        this.stoppingTime = LocalTime.of(stopHour, stopMin);
+        this.lunchStart = LocalTime.of(lunchStartHour, lunchStartMin);
+        this.lunchStop = LocalTime.of(lunchStopHour, lunchStopMin);
+        this.lunchDeduct = lunchDeduct;
         this.interval = LocalTime.of(0, interval, 0);
         this.gracePeriod = LocalTime.of(0, gracePeriod, 0);
         this.dock = LocalTime.of(0, dock, 0);
@@ -72,7 +72,7 @@ public class Shift {
         return interval;
     }
     
-    public LocalTime getlunchDeduct() {
+    public int getlunchDeduct() {
         return lunchDeduct;
     }
     
@@ -103,7 +103,7 @@ public class Shift {
         this.lunchStop = lunchStop;
     }
 
-    public void setLunchDeduct(LocalTime lunchDeduct) {
+    public void setLunchDeduct(int lunchDeduct) {
         this.lunchDeduct = lunchDeduct;
     }
 
@@ -141,9 +141,9 @@ public class Shift {
         
        StringBuilder s = new StringBuilder();
        s.append(description).append(": ").append(startingTime.toString()).append(" - ");
-       s.append(stoppingTime.toString()).append(" (").append(totalShiftHours()).append("); Lunch: ");
+       s.append(stoppingTime.toString()).append(" (").append(totalShiftHours()).append(" minutes); Lunch: ");
        s.append(lunchStart.toString()).append(" - ").append(lunchStop.toString()).append(" (");
-       s.append(totalLunchTime()).append(")");
+       s.append(totalLunchTime()).append(" minutes)");
        
        return s.toString();
         

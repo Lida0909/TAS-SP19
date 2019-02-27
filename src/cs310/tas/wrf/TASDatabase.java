@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 /**
@@ -75,20 +77,23 @@ public class TASDatabase {
         }  
         
         catch (Exception e) {
+            
             System.err.println(e.toString());
+        
         }
         
     }
     
     public Badge getBadge(String badgeID) {
         
-        ArrayList<String> list = new ArrayList<>();
+        String id = null;
+        String description = null;
         
         try {
             
             /* Prepare Select Query */
                 
-            query = "SELECT id,description FROM badge WHERE id = "+ badgeID;
+            query = "SELECT id,description FROM badge WHERE id = '"+ badgeID +"'";
 
             pstSelect = conn.prepareStatement(query);
                 
@@ -114,11 +119,8 @@ public class TASDatabase {
                     
                     while(resultset.next()) {
                         
-                        for (int i = 1; i <= columnCount; i++) {
-                            
-                            list.add(resultset.getString(i));
-                            
-                        }
+                        id = resultset.getString(1);
+                        description = resultset.getString(2);
                         
                     }
                         
@@ -163,15 +165,17 @@ public class TASDatabase {
             
         }
         
-        Badge b = new Badge(list.get(0),list.get(1));
+        Badge b = new Badge(id, description);
         
         return b;
         
     }
     
-    public void getPunch(String punchID) {
+    public Punch getPunch(int punchID) {
         
-        ArrayList<String> list = new ArrayList<>();
+        int id = 0, terminalID = 0, punchTypeID = 0;
+        String badgeID = "";
+        Timestamp originalTimestamp = null;
         
         try {
         
@@ -204,13 +208,13 @@ public class TASDatabase {
                     resultset = pstSelect.getResultSet();
                     
                     while(resultset.next()) {
-                        
-                        for (int i = 1; i <= columnCount; i++) {
-                            
-                            list.add(resultset.getString(i));
-                            
-                        }
-                        
+                         
+                        id = resultset.getInt(1);
+                        terminalID = resultset.getInt(2);
+                        badgeID = resultset.getString(3);
+                        originalTimestamp = resultset.getTimestamp(4);
+                        punchTypeID = resultset.getInt(5);
+  
                     }
                         
                 }
@@ -230,8 +234,6 @@ public class TASDatabase {
                 hasresults = pstSelect.getMoreResults();
 
             }
-            
-            
 
         }
         
@@ -256,17 +258,30 @@ public class TASDatabase {
             
         }
         
+        Punch p = new Punch(id, terminalID, badgeID, originalTimestamp, punchTypeID);
+        
+        return p;
+        
     }
     
-    public void getShift(int shiftID) {
+    public Shift getShift(int shiftID) {
         
-        ArrayList<String> list = new ArrayList<>();
+        String description = null; 
+        String[] startingTime = null;
+        String[] stoppingTime = null;
+        String[] lunchStart = null;
+        String[] lunchStop = null;
+
+        int lunchDeduct = 0;
+        int interval = 0;
+        int gracePeriod = 0;
+        int dock = 0;
         
         try {
         
             /* Prepare Select Query */
                 
-            query = "SELECT id,description,start,stop,`interval`,graceperiod,"
+            query = "SELECT description,start,stop,`interval`,graceperiod,"
                     + "lunchstart,lunchstop,lunchdeduct FROM tas.shift WHERE id"
                     + " = "+ shiftID;
 
@@ -295,12 +310,15 @@ public class TASDatabase {
                     
                     while(resultset.next()) {
                         
-                        for (int i = 1; i <= columnCount; i++) {
-                            
-                            System.out.println(resultset.getString(i));
-                            
-                        }
-                        
+                       description = resultset.getString(1);
+                       startingTime = resultset.getTime(2).toString().split(":");
+                       stoppingTime = resultset.getTime(3).toString().split(":");
+                       interval = resultset.getInt(4);
+                       gracePeriod = resultset.getInt(5);                                           
+                       lunchStart = resultset.getTime(6).toString().split(":");
+                       lunchStop = resultset.getTime(7).toString().split(":");
+                       lunchDeduct = resultset.getInt(8);
+                       
                     }
                         
                 }
@@ -343,17 +361,47 @@ public class TASDatabase {
             } catch (Exception e) {} }
             
         }
+        //String description, int startHour, int startMin,int interval, int gracePeriod,
+            //int dock, int stopHour, int stopMin, int lunchStartHour, int lunchStartMin,
+            //int lunchStopHour, int lunchStopMin, int lunchDeduct)
+        int shiftStartHour = Integer.parseInt(startingTime[0]);
+        int shiftStartMinute = Integer.parseInt(startingTime[1]);
+        int shiftStopHour = Integer.parseInt(stoppingTime[0]);
+        int shiftStopMinute = Integer.parseInt(stoppingTime[1]);
+        int lunchStartHour = Integer.parseInt(lunchStart[0]);
+        int lunchStartMinute = Integer.parseInt(lunchStart[1]);
+        int lunchStopHour = Integer.parseInt(lunchStop[0]);
+        int lunchStopMinute = Integer.parseInt(lunchStop[1]);
+        
+        Shift s = new Shift(description, shiftStartHour, shiftStartMinute, 
+                interval, gracePeriod, dock, shiftStopHour, shiftStopMinute,
+                lunchStartHour, lunchStartMinute, lunchStopHour, lunchStopMinute, lunchDeduct);
+        
+        return s;
         
     }
     
-    public void getShift(String badgeID) {
+    public Shift getShift(Badge badge) {
+        
+        String description = null; 
+        Time startingTime = null;
+        Time stoppingTime = null;
+        Time lunchStart = null;
+        Time lunchStop = null;
+
+        int lunchDeduct = 0;
+        int interval = 0;
+        int gracePeriod = 0;
+        int dock = 0;
+        
+        Shift s = null;
         
         try {
         
             /* Prepare Select Query */
                 
-            query = "SELECT shiftid FROM tas.employee WHERE badgeid = "
-                    + badgeID;
+            query = "SELECT shiftid FROM tas.employee WHERE badgeid = '"
+                    + badge.getID() + "'";
 
             pstSelect = conn.prepareStatement(query);
                 
@@ -374,9 +422,9 @@ public class TASDatabase {
                     
                     resultset.next();
    
-                    getShift(Integer.parseInt(resultset.getString(1)));   
+                    s = getShift(resultset.getInt(1));    
 
-        }
+                    }
         
         catch (Exception e) {
             
@@ -399,8 +447,8 @@ public class TASDatabase {
             
         }
         
+        return s;
+        
     }
-    
-
-    
+        
 }    
