@@ -24,7 +24,7 @@ public class Badge {
     @Override
 
     public String toString() {
-        return ("#" + id + "(" + name + ")");
+        return ("#" + id + " (" + name + ")");
     }
     
     public String getID(){
