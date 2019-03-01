@@ -58,12 +58,9 @@ public class Punch {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         String formattedDate = sdf.format(cal.getTime()).toUpperCase();
         
-        StringBuilder originalTimestamptoString = new StringBuilder();
-        originalTimestamptoString.append("#").append(getBadgeID());
-        originalTimestamptoString.append(punchResults).append(" ").append(formattedDate);
+        String originalTimestamptoString = "#" + getBadgeID() + " " + punchResults + " " + formattedDate;
         
-        //String originalTimestamptoString = "#" + getBadgeID() + " " + punchResults + " " + formattedDate;
-        return originalTimestamptoString.toString();
+        return originalTimestamptoString;
          
     }
     
