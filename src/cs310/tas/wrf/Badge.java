@@ -24,7 +24,9 @@ public class Badge {
     @Override
 
     public String toString() {
-        return ("#" + id + " (" + name + ")");
+        StringBuilder s = new StringBuilder();
+        s.append("#").append(id).append(" (").append(name).append(")");
+        return s.toString();
     }
     
     public String getID(){
