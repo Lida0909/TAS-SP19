@@ -16,7 +16,7 @@ public class Punch {
     private int id;
     private Timestamp originalTimeStamp;
     
-    Punch (int id, int terminalID, String badgeID, Timestamp originalTimeStamp, int punchTypeID) {
+    /*Punch (int id, int terminalID, String badgeID, Timestamp originalTimeStamp, int punchTypeID) {
         
         this.id = id;
         this.terminalID = terminalID;
@@ -24,6 +24,16 @@ public class Punch {
         this.originalTimeStamp = originalTimeStamp;
         this.punchTypeID = punchTypeID;
             
+    }*/
+    
+    Punch(int terminalID, String badgeID, int punchTypeID) {
+        
+        this.id = 0;
+        this.badgeID = badgeID;
+        this.terminalID = terminalID;
+        this.punchTypeID = punchTypeID;
+        this.originalTimeStamp = null;
+        
     }
     
     public String printOriginalTimestamp() {
@@ -59,7 +69,7 @@ public class Punch {
         String formattedDate = sdf.format(cal.getTime()).toUpperCase();
         
         String originalTimestamptoString = "#" + getBadgeID() + " " + punchResults + " " + formattedDate;
-        
+            
         return originalTimestamptoString;
          
     }
@@ -68,11 +78,50 @@ public class Punch {
         return "";
     }
 
+    // Getter Methods
+    
     public String getBadgeID() {
         return badgeID;
     }
+
+    public int getTerminalID() {
+        return terminalID;
+    }
+
+    public int getPunchTypeID() {
+        return punchTypeID;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public Timestamp getOriginalTimeStamp() {
+        return originalTimeStamp;
+    }
     
+    // Setter Methods
+
+    public void setBadgeID(String badgeID) {
+        this.badgeID = badgeID;
+    }
+
+    public void setTerminalID(int terminalID) {
+        this.terminalID = terminalID;
+    }
+
+    public void setPunchTypeID(int punchTypeID) {
+        this.punchTypeID = punchTypeID;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setOriginalTimeStamp(Timestamp originalTimeStamp) {
+        this.originalTimeStamp = originalTimeStamp;
+    }
     
-    
+      
 }
 
