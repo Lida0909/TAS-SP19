@@ -257,7 +257,7 @@ public class TASDatabase {
             
         }
         
-        Punch p = new Punch(terminalID, badgeID,
+        Punch p = new Punch(id, terminalID, badgeID, originalTimestamp,
                 punchTypeID);
         p.setOriginalTimeStamp(originalTimestamp);
         
@@ -390,7 +390,7 @@ public class TASDatabase {
             /* Prepare Select Query */
                 
             query = "SELECT shiftid FROM tas.employee WHERE badgeid = '"
-                    + badge.getID() + "'";
+                    + badge.getBadgeid() + "'";
 
             pstSelect = conn.prepareStatement(query);
                 

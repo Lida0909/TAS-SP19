@@ -16,24 +16,23 @@ public class Punch {
     private int id;
     private Timestamp originalTimeStamp;
     
-    /*Punch (int id, int terminalID, String badgeID, Timestamp originalTimeStamp, int punchTypeID) {
+public Punch(int id, int terminalID, String badgeID, Timestamp originalTimeStamp, int punchTypeID) {
         
         this.id = id;
         this.terminalID = terminalID;
         this.badgeID = badgeID;
         this.originalTimeStamp = originalTimeStamp;
         this.punchTypeID = punchTypeID;
-            
-    }*/
-    
-    Punch(int terminalID, String badgeID, int punchTypeID) {
-        
-        this.id = 0;
-        this.badgeID = badgeID;
+}
+//Punch(db.getBadge("021890C0"), 101, 1)
+
+public Punch(Badge b, int terminalID, int punchTypeID){
+        GregorianCalendar cal = new GregorianCalendar();
+        //Punch(0, terminalID, b.getID(), new Timestamp(cal.getTimeInMillis()), punchTypeID);
         this.terminalID = terminalID;
+        this.badgeID = b.getBadgeid();
+        this.originalTimeStamp = new Timestamp(cal.getTimeInMillis());
         this.punchTypeID = punchTypeID;
-        this.originalTimeStamp = null;
-        
     }
     
     public String printOriginalTimestamp() {

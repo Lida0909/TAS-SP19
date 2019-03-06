@@ -1,4 +1,9 @@
-package tas_fa18;
+package tas_sp19;
+
+import cs310.tas.wrf.Shift;
+import cs310.tas.wrf.TASDatabase;
+import cs310.tas.wrf.Punch;
+import cs310.tas.wrf.Badge;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

@@ -29,7 +29,7 @@ public class Badge {
         return s.toString();
     }
     
-    public String getID(){
+    public String getBadgeid(){
         return id;
     }
     
