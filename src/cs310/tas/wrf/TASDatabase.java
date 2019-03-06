@@ -439,5 +439,103 @@ public class TASDatabase {
         return s;
         
     }
+    
+    public int insertPunch(Punch p) {
+        
+        String badgeID = p.getBadgeid();
+        int terminalID = p.getTerminalid();
+        int punchTypeID = p.getPunchtypeid();
+        int newPunchID = p.getId();
+        Timestamp originalTimeStamp = p.getOriginaltimestamp2();
+        
+        try {
+            
+            /* Prepare Insert Query */
+
+            query = "INSERT INTO punch (terminalid,badgeid,originaltimestamp,"
+                    + "punchtypeid) VALUES('" + terminalID 
+                    + "','" + badgeID + "','" + originalTimeStamp
+                    + "','" + punchTypeID + "')";
+
+            pstSelect = conn.prepareStatement(query);
+                
+            /* Execute Select Query */
+                
+            System.out.println("Submitting Query ...");
+                
+            hasresults = pstSelect.execute();
+            
+            System.out.println("Punch Inserted!");
+       
+        }
+        
+        catch (Exception e) {
+            
+            System.err.println(e.toString());
+            
+        }
+        
+        /* Close Other Database Objects */
+        
+        finally {
+
+            if (pstSelect != null) { try { pstSelect.close(); pstSelect = null; 
+            } catch (Exception e) {} }
+            
+        }
+        
+        try {
+        
+            /* Prepare Select Query */
+                
+            query = "SELECT id FROM punch";
+                    
+
+            pstSelect = conn.prepareStatement(query);
+                
+            /* Execute Select Query */
+                
+            System.out.println("Submitting Query ...");
+                
+            hasresults = pstSelect.execute();                
+            resultset = pstSelect.getResultSet();
+            metadata = resultset.getMetaData();
+            columnCount = metadata.getColumnCount(); 
+            
+            /* Get Results */
+   
+                    /* Get ResultSet */
+                    
+                    
+                    resultset = pstSelect.getResultSet();
+                    resultset.last();
+                    newPunchID = resultset.getRow();
+
+                    }
+        
+        catch (Exception e) {
+            
+            System.err.println(e.toString());
+            
+        }
+        
+        /* Close Other Database Objects */
+        
+        finally {
+            
+            if (resultset != null) { try { resultset.close(); resultset = null; 
+            } catch (Exception e) {} }
+            
+            if (pstSelect != null) { try { pstSelect.close(); pstSelect = null; 
+            } catch (Exception e) {} }
+            
+            if (pstUpdate != null) { try { pstUpdate.close(); pstUpdate = null; 
+            } catch (Exception e) {} }
+            
+        }
+        
+        return newPunchID;
+        
+    }
         
 }    

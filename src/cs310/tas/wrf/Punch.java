@@ -67,7 +67,7 @@ public Punch(Badge b, int terminalID, int punchTypeID){
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         String formattedDate = sdf.format(cal.getTime()).toUpperCase();
         
-        String originalTimestamptoString = "#" + getBadgeID() + " " + punchResults + " " + formattedDate;
+        String originalTimestamptoString = "#" + getBadgeid() + " " + punchResults + " " + formattedDate;
             
         return originalTimestamptoString;
          
@@ -79,15 +79,15 @@ public Punch(Badge b, int terminalID, int punchTypeID){
 
     // Getter Methods
     
-    public String getBadgeID() {
+    public String getBadgeid() {
         return badgeID;
     }
 
-    public int getTerminalID() {
+    public int getTerminalid() {
         return terminalID;
     }
 
-    public int getPunchTypeID() {
+    public int getPunchtypeid() {
         return punchTypeID;
     }
 
@@ -95,7 +95,11 @@ public Punch(Badge b, int terminalID, int punchTypeID){
         return id;
     }
 
-    public Timestamp getOriginalTimeStamp() {
+    public long getOriginaltimestamp() {
+        return originalTimeStamp.getTime();
+    }
+    
+    public Timestamp getOriginaltimestamp2() {
         return originalTimeStamp;
     }
     
