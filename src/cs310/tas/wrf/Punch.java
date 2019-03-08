@@ -96,7 +96,7 @@ public Punch(Badge b, int terminalID, int punchTypeID){
     }
 
     public long getOriginaltimestamp() {
-        return originalTimeStamp.getTime();
+        return originalTimeStamp.getTime() / 1000;
     }
     
     public Timestamp getOriginaltimestamp2() {
