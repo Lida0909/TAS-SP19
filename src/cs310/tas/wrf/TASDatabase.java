@@ -543,7 +543,7 @@ public class TASDatabase {
         
     }
     
-    public ArrayList getDailyPunchList(Badge b, long ts) throws ParseException {
+    public ArrayList getDailyPunchList(Badge b, long ts) {
         
         ArrayList list = new ArrayList();
         GregorianCalendar cal = new GregorianCalendar();

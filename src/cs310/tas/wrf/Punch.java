@@ -16,17 +16,17 @@ public class Punch {
     private int id;
     private Timestamp originalTimeStamp;
     
-public Punch(int id, int terminalID, String badgeID, Timestamp originalTimeStamp, int punchTypeID) {
-        
+    public Punch(int id, int terminalID, String badgeID, Timestamp originalTimeStamp, int punchTypeID) {
+
         this.id = id;
         this.terminalID = terminalID;
         this.badgeID = badgeID;
         this.originalTimeStamp = originalTimeStamp;
         this.punchTypeID = punchTypeID;
-}
-//Punch(db.getBadge("021890C0"), 101, 1)
+        
+    }
 
-public Punch(Badge b, int terminalID, int punchTypeID){
+    public Punch(Badge b, int terminalID, int punchTypeID){
         GregorianCalendar cal = new GregorianCalendar();
         //Punch(0, terminalID, b.getID(), new Timestamp(cal.getTimeInMillis()), punchTypeID);
         this.terminalID = terminalID;
@@ -54,15 +54,14 @@ public Punch(Badge b, int terminalID, int punchTypeID){
                 break;
             default:
                 System.out.println("ERROR");
-        }
-        
-        //String originalTimestamptoString = "#" + getBadgeID() + punchResults + " " + date;
+        }   
         
         /*
         A pattern is created for the format according to the documentation on SimpleDateFormat. 
         Then an output string is constructed using the cal.getTime(). Then the output string is built,
         .toUppercase() is used to ensure the day of the week is capitalized.
         */
+        
         String pattern = "EEE MM/dd/yyyy HH:mm:ss";
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         String formattedDate = sdf.format(cal.getTime()).toUpperCase();
