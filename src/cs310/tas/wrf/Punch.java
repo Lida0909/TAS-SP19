@@ -18,7 +18,7 @@ public class Punch {
     
     public Punch(int id, int terminalID, String badgeID, Timestamp originalTimeStamp, int punchTypeID) {
 
-        this.id = id;
+        if(id >= 0){this.id = id;}
         this.terminalID = terminalID;
         this.badgeID = badgeID;
         this.originalTimeStamp = originalTimeStamp;
@@ -27,12 +27,7 @@ public class Punch {
     }
 
     public Punch(Badge b, int terminalID, int punchTypeID){
-        GregorianCalendar cal = new GregorianCalendar();
-        //Punch(0, terminalID, b.getID(), new Timestamp(cal.getTimeInMillis()), punchTypeID);
-        this.terminalID = terminalID;
-        this.badgeID = b.getBadgeid();
-        this.originalTimeStamp = new Timestamp(cal.getTimeInMillis());
-        this.punchTypeID = punchTypeID;
+        this(-1, terminalID, b.getBadgeid(), new Timestamp(new GregorianCalendar().getTimeInMillis()), punchTypeID);
     }
     
     public String printOriginalTimestamp() {
