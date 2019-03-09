@@ -6,6 +6,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
 
 /**
  *
@@ -259,7 +263,7 @@ public class TASDatabase {
         
         Punch p = new Punch(id, terminalID, badgeID, originalTimestamp,
                 punchTypeID);
-        p.setOriginalTimeStamp(originalTimestamp);
+        
         
         return p;
         
@@ -439,5 +443,181 @@ public class TASDatabase {
         return s;
         
     }
+    
+    public int insertPunch(Punch p) {
         
-}    
+        String badgeID = p.getBadgeid();
+        int terminalID = p.getTerminalid();
+        int punchTypeID = p.getPunchtypeid();
+        int newPunchID = p.getId();
+        Timestamp originalTimeStamp = p.getOriginaltimestamp2();
+        
+        try {
+            
+            /* Prepare Insert Query */
+
+            query = "INSERT INTO punch (terminalid,badgeid,originaltimestamp,"
+                    + "punchtypeid) VALUES('" + terminalID 
+                    + "','" + badgeID + "','" + originalTimeStamp
+                    + "','" + punchTypeID + "')";
+
+            pstSelect = conn.prepareStatement(query);
+                
+            /* Execute Select Query */
+                
+            System.out.println("Submitting Query ...");
+                
+            hasresults = pstSelect.execute();
+            
+            System.out.println("Punch Inserted!");
+       
+        }
+        
+        catch (Exception e) {
+            
+            System.err.println(e.toString());
+            
+        }
+        
+        /* Close Other Database Objects */
+        
+        finally {
+
+            if (pstSelect != null) { try { pstSelect.close(); pstSelect = null; 
+            } catch (Exception e) {} }
+            
+        }
+        
+        try {
+        
+            /* Prepare Select Query */
+                
+            query = "SELECT id FROM punch ORDER BY id DESC";
+                    
+
+            pstSelect = conn.prepareStatement(query);
+                
+            /* Execute Select Query */
+                
+            System.out.println("Submitting Query ...");
+                
+            hasresults = pstSelect.execute();                
+            resultset = pstSelect.getResultSet();
+            metadata = resultset.getMetaData();
+            columnCount = metadata.getColumnCount(); 
+            
+            /* Get Results */
+   
+            System.out.println("Getting Results ...");    
+            
+                    /* Get ResultSet */
+
+                    resultset = pstSelect.getResultSet();
+                    resultset.next();
+                    newPunchID = resultset.getInt(1);
+
+                    }
+        
+        catch (Exception e) {
+            
+            System.err.println(e.toString());
+            
+        }
+        
+        /* Close Other Database Objects */
+        
+        finally {
+            
+            if (resultset != null) { try { resultset.close(); resultset = null; 
+            } catch (Exception e) {} }
+            
+            if (pstSelect != null) { try { pstSelect.close(); pstSelect = null; 
+            } catch (Exception e) {} }
+            
+            if (pstUpdate != null) { try { pstUpdate.close(); pstUpdate = null; 
+            } catch (Exception e) {} }
+            
+        }
+        
+        return newPunchID;
+        
+    }
+    
+    public ArrayList getDailyPunchList(Badge b, long ts) {
+        
+        ArrayList list = new ArrayList();
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTimeInMillis(ts);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String date = format.format(cal.getTime());        
+
+        try {
+        
+            /* Prepare Select Query */
+            
+            query = "SELECT id,terminalid,badgeid,originaltimestamp,"
+                    + "punchtypeid FROM tas.punch WHERE badgeid = '"
+                    + b.getBadgeid() + "' AND originaltimestamp LIKE '%"
+                    + date + "%'";
+            
+            
+
+            pstSelect = conn.prepareStatement(query);
+                
+            /* Execute Select Query */
+                
+            //System.out.println("Submitting Query ...");
+                
+            hasresults = pstSelect.execute();                
+            resultset = pstSelect.getResultSet();
+            metadata = resultset.getMetaData();
+            columnCount = metadata.getColumnCount(); 
+            
+            /* Get Results */
+   
+            System.out.println("Getting Results ...");
+            
+                    /* Get ResultSet */
+                        
+                    resultset = pstSelect.getResultSet();                    
+                    
+                    
+                    for(int i = 1; i < columnCount; i++) {
+                        
+                        resultset.next();
+                        list.add(new Punch(resultset.getInt(1)
+                                ,resultset.getInt(2),resultset.getString(3)
+                                ,resultset.getTimestamp(4)
+                                ,resultset.getInt(5)));
+                    
+                    }
+        }        
+        
+        catch (Exception e) {
+            
+            System.err.println(e.toString());
+            
+        }
+        
+        /* Close Other Database Objects */
+        
+        finally {
+            
+            if (resultset != null) { try { resultset.close(); resultset = null; 
+            } catch (Exception e) {} }
+            
+            if (pstSelect != null) { try { pstSelect.close(); pstSelect = null; 
+            } catch (Exception e) {} }
+            
+            if (pstUpdate != null) { try { pstUpdate.close(); pstUpdate = null; 
+            } catch (Exception e) {} }
+            
+        }
+        
+        return list;
+        
+    }
+        
+} 
+    
+
