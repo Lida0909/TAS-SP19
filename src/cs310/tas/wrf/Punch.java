@@ -3,6 +3,7 @@ package cs310.tas.wrf;
 import java.sql.Timestamp;
 import java.util.*;
 import java.text.*;
+import java.time.LocalTime;
 
 /**
  *
@@ -15,6 +16,7 @@ public class Punch {
     private int punchTypeID;
     private int id;
     private Timestamp originalTimeStamp;
+    private Timestamp adjustedTimeStamp;
     
     Punch (int id, int terminalID, String badgeID, Timestamp originalTimeStamp, int punchTypeID) {
         
@@ -116,6 +118,45 @@ public class Punch {
         this.originalTimeStamp = originalTimeStamp;
     }
     
+    public void adjust(Shift s){
+        
+        LocalTime shiftStart = s.getStartingTime();
+        LocalTime shiftStop = s.getStoppingTime();
+        LocalTime lunchStart = s.getLunchStart();
+        LocalTime lunchStop = s.getLunchStop();
+        
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTimeInMillis(originalTimeStamp.getTime());
+        int punchHour = cal.HOUR;
+        int punchMinutes = cal.MINUTE;
+        LocalTime punchTime = LocalTime.of(punchHour, punchMinutes);
+        adjustedTimeStamp = originalTimeStamp;
+        
+        switch(this.punchTypeID){
+            case 0:
+                
+                // CHECKS IF THE PUNCH IS CLOCKOUT FOR THE LUNCH BREAK
+                
+                if( punchTime.isAfter(shiftStart) && punchTime.isBefore(lunchStop) ) {
+                    if( punchTime.isBefore(lunchStart) ) {
+                        // "#28DC3FB8 CLOCKED OUT: FRI 09/07/2018 12:00:00 (Lunch Start)
+                        
+                        
+                        
+                    }
+                    
+                }
+                break;
+            case 1:
+                break;
+            default:
+                System.out.println("ERROR");
+        }
+        
+    }
       
 }
+
+
+     
 
