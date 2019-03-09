@@ -263,7 +263,7 @@ public class TASDatabase {
         
         Punch p = new Punch(id, terminalID, badgeID, originalTimestamp,
                 punchTypeID);
-        p.setOriginalTimeStamp(originalTimestamp);
+        
         
         return p;
         
