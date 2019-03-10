@@ -17,6 +17,7 @@ public class Punch {
     private int id;
     private Timestamp originalTimeStamp;
     private Timestamp adjustedTimeStamp;
+    private String adjustMessage;
     
 
     public Punch (int id, int terminalID, String badgeID, Timestamp originalTimeStamp, int punchTypeID) {
@@ -70,8 +71,32 @@ public class Punch {
          
     }
     
-    public String printAdjustedTimeStamp() {
-        return "";
+    public String printAdjustedTimestamp() {
+        String punchResults = "";
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTimeInMillis(adjustedTimeStamp.getTime());
+        
+        switch(this.punchTypeID){
+            case 0:
+                punchResults = "CLOCKED OUT:";
+                break;
+            case 1:
+                punchResults = "CLOCKED IN:";
+                break;
+            case 2:
+                punchResults = "TIMED OUT:";
+                break;
+            default:
+                System.out.println("ERROR");
+        }   
+        
+        String pattern = "EEE MM/dd/yyyy HH:mm:ss";
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+        String formattedDate = sdf.format(cal.getTime()).toUpperCase();
+        //#BE51FA92 CLOCKED IN: WED 08/01/2018 07:00:00 (Shift Start)
+        String originalTimestamptoString = "#" + getBadgeid() + " " + punchResults + " " + formattedDate + "(" + adjustMessage + ")";
+            
+        return originalTimestamptoString;
     }
 
     // Getter Methods
@@ -142,16 +167,24 @@ public class Punch {
                 // CHECKS IF THE PUNCH IS CLOCKOUT FOR THE LUNCH BREAK
                 
                 if( punchTime.isAfter(shiftStart) && punchTime.isBefore(lunchStop) ) {
-                    if( punchTime.isBefore(lunchStart) ) {
-                        // "#28DC3FB8 CLOCKED OUT: FRI 09/07/2018 12:00:00 (Lunch Start)
+                    adjustMessage = "Lunch Start";
+                    if( punchTime.isAfter(lunchStart) && punchTime.isBefore(lunchStop)) {
                         
-                        
+                        adjustedTimeStamp.setHours(lunchStart.getHour());
+                        adjustedTimeStamp.setMinutes(lunchStart.getMinute());
+                        adjustedTimeStamp.setSeconds(0);
                         
                     }
                     
                 }
                 break;
             case 1:
+                if( punchTime.isBefore(lunchStart) ) {
+                    if(punchTime.isBefore(shiftStart) && punchTime.isAfter(shiftStart.minusMinutes(s.getInterval()))) {
+                        
+                    }
+                    
+                }
                 break;
             default:
                 System.out.println("ERROR");

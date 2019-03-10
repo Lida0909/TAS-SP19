@@ -18,9 +18,9 @@ public class Shift {
     private LocalTime lunchStop;
     
     private int lunchDeduct;
-    private LocalTime interval;
-    private LocalTime gracePeriod;
-    private LocalTime dock;
+    private int interval;
+    private int gracePeriod;
+    private int dock;
     
     public Shift(String description, int startHour, int startMin,int interval, int gracePeriod,
             int dock, int stopHour, int stopMin, int lunchStartHour, int lunchStartMin,
@@ -32,9 +32,9 @@ public class Shift {
         this.lunchStart = LocalTime.of(lunchStartHour, lunchStartMin);
         this.lunchStop = LocalTime.of(lunchStopHour, lunchStopMin);
         this.lunchDeduct = lunchDeduct;
-        this.interval = LocalTime.of(0, interval, 0);
-        this.gracePeriod = LocalTime.of(0, gracePeriod, 0);
-        this.dock = LocalTime.of(0, dock, 0);
+        this.interval = interval;
+        this.gracePeriod = gracePeriod;
+        this.dock = dock;
         
     }
     
@@ -73,7 +73,7 @@ public class Shift {
         return lunchStop;
     }
     
-    public LocalTime getInterval() {
+    public int getInterval() {
         return interval;
     }
     
@@ -81,11 +81,11 @@ public class Shift {
         return lunchDeduct;
     }
     
-    public LocalTime getGracePeriod() {
+    public int getGracePeriod() {
         return gracePeriod;
     }
     
-    public LocalTime getDock() {
+    public int getDock() {
         return dock;
     }
     
@@ -112,15 +112,15 @@ public class Shift {
         this.lunchDeduct = lunchDeduct;
     }
 
-    public void setInterval(LocalTime interval) {
+    public void setInterval(int interval) {
         this.interval = interval;
     }
 
-    public void setGracePeriod(LocalTime gracePeriod) {
+    public void setGracePeriod(int gracePeriod) {
         this.gracePeriod = gracePeriod;
     }
 
-    public void setDock(LocalTime dock) {
+    public void setDock(int dock) {
         this.dock = dock;
     }
     
