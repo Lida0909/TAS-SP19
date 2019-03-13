@@ -59,7 +59,6 @@ public class Punch {
         String punchResults = "";
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTimeInMillis(originalTimeStamp.getTime());
-        //Date date = cal.getTime();
         
         switch(this.punchTypeID){
             case 0:
@@ -116,7 +115,6 @@ public class Punch {
         String pattern = "EEE MM/dd/yyyy HH:mm:ss";
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         String formattedDate = sdf.format(cal.getTime()).toUpperCase();
-        //#BE51FA92 CLOCKED IN: WED 08/01/2018 07:00:00 (Shift Start)
         String originalTimestamptoString = "#" + getBadgeid() + " " + punchResults + " " + formattedDate + " (" + adjustMessage + ")";
             
         return originalTimestamptoString;
@@ -238,7 +236,8 @@ public class Punch {
         int totalpunchTimeMinutes = punchTime.getMinute() + (punchTime.getHour()*60);
         int totalshiftStopMinutes = shiftStop.getMinute() + (punchTime.getHour()*60);
         int totalshiftStartMinutes = shiftStart.getMinute() + (shiftStart.getHour()*60);
-        boolean weekend =  (punchTimeStamp.getDayOfWeek().toString().equals("SATURDAY") || punchTimeStamp.getDayOfWeek().toString().equals("SUNDAY") );
+        boolean weekend =  (punchTimeStamp.getDayOfWeek().toString().equals("SATURDAY") || 
+                punchTimeStamp.getDayOfWeek().toString().equals("SUNDAY") );
         
         adjustedTimeStamp = Timestamp.valueOf(punchTimeStamp);
         
@@ -273,7 +272,8 @@ public class Punch {
                             adjustedTimeStamp = Timestamp.valueOf(punchTimeStamp);
                         }
                         
-                        else if ( (totalshiftStopMinutes - totalpunchTimeMinutes) > gracePeriod && (totalshiftStopMinutes - totalpunchTimeMinutes) <= dock ) {
+                        else if ( (totalshiftStopMinutes - totalpunchTimeMinutes) > gracePeriod && 
+                                (totalshiftStopMinutes - totalpunchTimeMinutes) <= dock ) {
                             adjustMessage = "Shift Dock";
                             totalshiftStopMinutes = totalshiftStopMinutes - dock;
                             punchTimeStamp = punchTimeStamp.withHour(totalshiftStopMinutes/60);
@@ -314,14 +314,14 @@ public class Punch {
                         
                         if( (totalshiftStopMinutes - totalpunchTimeMinutes) <= gracePeriod ) {
                             adjustMessage = "Shift Stop";
-                            //punchTime = shiftStop;
                             punchTimeStamp = punchTimeStamp.withHour(shiftStop.getHour());
                             punchTimeStamp = punchTimeStamp.withMinute(shiftStop.getMinute());
                             punchTimeStamp = punchTimeStamp.withSecond(0);
                             adjustedTimeStamp = Timestamp.valueOf(punchTimeStamp);
                         }
                         
-                        else if ( (totalshiftStopMinutes - totalpunchTimeMinutes) > gracePeriod && (totalshiftStopMinutes - totalpunchTimeMinutes) <= dock ) {
+                        else if ( (totalshiftStopMinutes - totalpunchTimeMinutes) > gracePeriod && 
+                                (totalshiftStopMinutes - totalpunchTimeMinutes) <= dock ) {
                             adjustMessage = "Shift Dock";
                             totalshiftStopMinutes = totalshiftStopMinutes - dock;
                             punchTimeStamp = punchTimeStamp.withHour(totalshiftStopMinutes/60);
@@ -381,21 +381,11 @@ public class Punch {
                         adjustedTimeStamp = Timestamp.valueOf(punchTimeStamp);
                         
                     }
-                    
-                    // CHECKS IF THE PUNCH IS RIGHT ON THE SHIFT END 
-                    
-                    else {
-                        adjustMessage = "None";
-                        punchTimeStamp = punchTimeStamp.withHour(shiftStop.getHour());
-                        punchTimeStamp = punchTimeStamp.withMinute(shiftStop.getMinute());
-                        punchTimeStamp = punchTimeStamp.withSecond(0);
-                        adjustedTimeStamp = Timestamp.valueOf(punchTimeStamp);
-                    }
-                    
-                    
+                                       
                 }
                 
                 break;
+                
                 
             case 1:
                 
@@ -493,16 +483,6 @@ public class Punch {
 
                     }
                     
-                }
-                
-                // CHECKS IF THE PUNCH IS RIGHT ON THE SHIFT END 
-                    
-                else {
-                    adjustMessage = "None";
-                    punchTimeStamp = punchTimeStamp.withHour(shiftStart.getHour());
-                    punchTimeStamp = punchTimeStamp.withMinute(shiftStart.getMinute());
-                    punchTimeStamp = punchTimeStamp.withSecond(0);
-                    adjustedTimeStamp = Timestamp.valueOf(punchTimeStamp);
                 }
                 
                 break;
