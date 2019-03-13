@@ -13,8 +13,8 @@ public class Badge {
     
     
     /**
-     * @param id   a string that ...DESCRIPTION
-     * @param name a string that ...DESCRIPTION
+     * @param id   a string that represents the badge id
+     * @param name a string that represents the badge name
     */
     public Badge(String id, String name) {
         
@@ -23,7 +23,7 @@ public class Badge {
             
     }
     /**
-     * @return     the string description of the badge as an id number and name
+     * @return the string description of the badge as an id number and name
      */
     @Override
 
@@ -43,7 +43,7 @@ public class Badge {
     
     /**
      * 
-     * @return  @return the badge name as a String
+     * @return the badge name as a String
      */
     public String getName(){
         return name;
