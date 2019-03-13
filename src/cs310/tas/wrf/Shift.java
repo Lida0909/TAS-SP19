@@ -175,11 +175,11 @@ public class Shift {
 
     /**
      *
-     * @param stoppigTime a void method that sets the stopping time as a
+     * @param stoppingTime a void method that sets the stopping time as a
      * LocalTime
      */
-    public void setStoppingTime(LocalTime stoppigTime) {
-        this.stoppingTime = stoppigTime;
+    public void setStoppingTime(LocalTime stoppingTime) {
+        this.stoppingTime = stoppingTime;
     }
 
     /**
