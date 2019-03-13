@@ -7,8 +7,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /**
- *
- * @author Matt Denman and William Penwell, Adam Stith
+ * The Punch class is an abstraction of a time clock punch. This class is used
+ * to store the information from a time clock punch and to adjust it according
+ * to a given shifts rules
+ * @author War Room F
  */
 public class Punch {
     
@@ -20,7 +22,14 @@ public class Punch {
     private Timestamp adjustedTimeStamp;
     private String adjustMessage;
     
-
+    /**
+     *
+     * @param id
+     * @param terminalID
+     * @param badgeID
+     * @param originalTimeStamp
+     * @param punchTypeID
+     */
     public Punch (int id, int terminalID, String badgeID, Timestamp originalTimeStamp, int punchTypeID) {
         
         if(id >= 0){this.id = id;}
@@ -31,10 +40,20 @@ public class Punch {
         
     }
 
+    /**
+     *
+     * @param b
+     * @param terminalID
+     * @param punchTypeID
+     */
     public Punch(Badge b, int terminalID, int punchTypeID){
         this(-1, terminalID, b.getBadgeid(), new Timestamp(new GregorianCalendar().getTimeInMillis()), punchTypeID);
     }
     
+    /**
+     *
+     * @return
+     */
     public String printOriginalTimestamp() {
         
         String punchResults = "";
@@ -72,6 +91,10 @@ public class Punch {
          
     }
     
+    /**
+     *
+     * @return
+     */
     public String printAdjustedTimestamp() {
         String punchResults = "";
         GregorianCalendar cal = new GregorianCalendar();
@@ -101,52 +124,102 @@ public class Punch {
 
     // Getter Methods
     
+    /**
+     *
+     * @return
+     */
+        
     public String getBadgeid() {
         return badgeID;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getTerminalid() {
         return terminalID;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getPunchtypeid() {
         return punchTypeID;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     *
+     * @return
+     */
     public long getOriginaltimestamp() {
         return originalTimeStamp.getTime() / 1000;
     }
     
+    /**
+     *
+     * @return
+     */
     public Timestamp getOriginaltimestamp2() {
         return originalTimeStamp;
     }
     
     // Setter Methods
 
+    /**
+     *
+     * @param badgeID
+     */
+    
     public void setBadgeID(String badgeID) {
         this.badgeID = badgeID;
     }
 
+    /**
+     *
+     * @param terminalID
+     */
     public void setTerminalID(int terminalID) {
         this.terminalID = terminalID;
     }
 
+    /**
+     *
+     * @param punchTypeID
+     */
     public void setPunchTypeID(int punchTypeID) {
         this.punchTypeID = punchTypeID;
     }
 
+    /**
+     *
+     * @param id
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     *
+     * @param originalTimeStamp
+     */
     public void setOriginalTimeStamp(Timestamp originalTimeStamp) {
         this.originalTimeStamp = originalTimeStamp;
     }
     
+    /**
+     *
+     * @param s
+     */
     public void adjust(Shift s){
         
         LocalTime shiftStart = s.getStartingTime();
@@ -437,8 +510,7 @@ public class Punch {
                 
             default:
                 System.out.println("ERROR");
-                
-                
+                               
         }
         
     }

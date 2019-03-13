@@ -1,8 +1,8 @@
-
 package cs310.tas.wrf;
 
 /**
- * The Badge class is an abstraction of an employee's id badge. This badge is used to identify which employee has clocked in or out.
+ * The Badge class is an abstraction of an employee's id badge. This badge is
+ * used to identify which employee has clocked in or out.
  * @author War Room F
  * 
  */
@@ -13,6 +13,7 @@ public class Badge {
     
     
     /**
+     * Used to create a new badge object.
      * @param id   a string that represents the badge id
      * @param name a string that represents the badge name
     */
@@ -23,6 +24,7 @@ public class Badge {
             
     }
     /**
+     * The string description of the badge.
      * @return the string description of the badge as an id number and name
      */
     @Override
@@ -34,7 +36,7 @@ public class Badge {
     }
     
     /**
-     * 
+     * Getter method for id.
      * @return the badge id as a String
      */
     public String getBadgeid(){
@@ -42,7 +44,7 @@ public class Badge {
     }
     
     /**
-     * 
+     * Getter method for name.
      * @return the badge name as a String
      */
     public String getName(){
