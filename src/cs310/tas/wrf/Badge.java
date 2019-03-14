@@ -1,26 +1,32 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cs310.tas.wrf;
 
 /**
- *
- * @author MattD
+ * The Badge class is an abstraction of an employee's id badge. This badge is
+ * used to identify which employee has clocked in or out.
+ * @author War Room F
+ * 
  */
 public class Badge {
     
     private String id;
     private String name;
     
+    
+    /**
+     * Used to create a new badge object.
+     * @param id   a string that represents the badge id
+     * @param name a string that represents the badge name
+    */
     public Badge(String id, String name) {
         
         this.id = id;
         this.name = name;
             
     }
-    
+    /**
+     * The string description of the badge.
+     * @return the string description of the badge as an id number and name
+     */
     @Override
 
     public String toString() {
@@ -29,10 +35,18 @@ public class Badge {
         return s.toString();
     }
     
+    /**
+     * Getter method for id.
+     * @return the badge id as a String
+     */
     public String getBadgeid(){
         return id;
     }
     
+    /**
+     * Getter method for name.
+     * @return the badge name as a String
+     */
     public String getName(){
         return name;
     }
