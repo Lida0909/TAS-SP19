@@ -24,11 +24,13 @@ public class Punch {
     
     /**
      *
-     * @param id
-     * @param terminalID
-     * @param badgeID
-     * @param originalTimeStamp
-     * @param punchTypeID
+     * @param id an int that represents the id of a punch
+     * @param terminalID an int that represents which terminal a punch was made
+     * @param badgeID a String that represents the id of a specific badge
+     * @param originalTimeStamp a Timestamp that represents the time a punch was
+     * made
+     * @param punchTypeID an int that represents whether someone clocked in or 
+     * out of a shift or timed out of a shift
      */
     public Punch (int id, int terminalID, String badgeID, Timestamp originalTimeStamp, int punchTypeID) {
         
@@ -42,9 +44,10 @@ public class Punch {
 
     /**
      *
-     * @param b
-     * @param terminalID
-     * @param punchTypeID
+     * @param b a Badge that represents a specific employee's badge id and name
+     * @param terminalID an int that represents which terminal a punch was made
+     * @param punchTypeID an int that represents whether someone clocked in or 
+     * out of a shift or timed out of a shift
      */
     public Punch(Badge b, int terminalID, int punchTypeID){
         this(-1, terminalID, b.getBadgeid(), new Timestamp(new GregorianCalendar().getTimeInMillis()), punchTypeID);
@@ -52,7 +55,7 @@ public class Punch {
     
     /**
      *
-     * @return
+     * @return the original timestamp of a punch as a string
      */
     public String printOriginalTimestamp() {
         
@@ -92,7 +95,7 @@ public class Punch {
     
     /**
      *
-     * @return
+     * @return the adjusted timestamp of a punch as a string
      */
     public String printAdjustedTimestamp() {
         String punchResults = "";
@@ -124,7 +127,7 @@ public class Punch {
     
     /**
      *
-     * @return
+     * @return the badge id as a string
      */
         
     public String getBadgeid() {
@@ -133,7 +136,7 @@ public class Punch {
 
     /**
      *
-     * @return
+     * @return the terminal id as an int
      */
     public int getTerminalid() {
         return terminalID;
@@ -141,7 +144,7 @@ public class Punch {
 
     /**
      *
-     * @return
+     * @return the punch type id as an int
      */
     public int getPunchtypeid() {
         return punchTypeID;
@@ -149,7 +152,7 @@ public class Punch {
 
     /**
      *
-     * @return
+     * @return the id as an int
      */
     public int getId() {
         return id;
@@ -157,7 +160,7 @@ public class Punch {
 
     /**
      *
-     * @return
+     * @return the original timestamp a long
      */
     public long getOriginaltimestamp() {
         return originalTimeStamp.getTime() / 1000;
@@ -165,7 +168,7 @@ public class Punch {
     
     /**
      *
-     * @return
+     * @return the original timestamp as a Timestamp
      */
     public Timestamp getOriginaltimestamp2() {
         return originalTimeStamp;
@@ -175,7 +178,7 @@ public class Punch {
 
     /**
      *
-     * @param badgeID
+     * @param badgeID a String that represents the id of a specific badge
      */
     
     public void setBadgeID(String badgeID) {
@@ -184,7 +187,7 @@ public class Punch {
 
     /**
      *
-     * @param terminalID
+     * @param terminalID an int that represents which terminal a punch was made
      */
     public void setTerminalID(int terminalID) {
         this.terminalID = terminalID;
@@ -192,7 +195,8 @@ public class Punch {
 
     /**
      *
-     * @param punchTypeID
+     * @param punchTypeID an int that represents whether someone clocked in or 
+     * out of a shift or timed out of a shift
      */
     public void setPunchTypeID(int punchTypeID) {
         this.punchTypeID = punchTypeID;
@@ -200,7 +204,7 @@ public class Punch {
 
     /**
      *
-     * @param id
+     * @param id an int that represents the id of a punch
      */
     public void setId(int id) {
         this.id = id;
@@ -208,7 +212,8 @@ public class Punch {
 
     /**
      *
-     * @param originalTimeStamp
+     * @param originalTimeStamp a Timestamp that represents the time a punch was
+     * made
      */
     public void setOriginalTimeStamp(Timestamp originalTimeStamp) {
         this.originalTimeStamp = originalTimeStamp;
@@ -216,7 +221,7 @@ public class Punch {
     
     /**
      *
-     * @param s
+     * @param s a Shift that represents the shift that should be adjusted
      */
     public void adjust(Shift s){
         
