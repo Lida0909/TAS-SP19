@@ -164,8 +164,7 @@ public class Shift {
 
     /**
      *
-     * @param startingTime a void method that sets the starting time as a
-     * LocalTime
+     * @param startingTime a LocalTime that represents the start time of a shift
      */
     public void setStartingTime(LocalTime startingTime) {
         this.startingTime = startingTime;
@@ -173,8 +172,7 @@ public class Shift {
 
     /**
      *
-     * @param stoppingTime a void method that sets the stopping time as a
-     * LocalTime
+     * @param stoppingTime a LocalTime that represents the stop time of a shift
      */
     public void setStoppingTime(LocalTime stoppingTime) {
         this.stoppingTime = stoppingTime;
@@ -182,8 +180,8 @@ public class Shift {
 
     /**
      *
-     * @param lunchStart a void method that sets the lunch start time as a 
-     * LocalTime
+     * @param lunchStart a LocalTime that represents the start of lunch of a 
+     * shift
      */
     public void setLunchStart(LocalTime lunchStart) {
         this.lunchStart = lunchStart;
@@ -191,8 +189,8 @@ public class Shift {
 
     /**
      *
-     * @param lunchStop a void method that sets the lunch stop time as a 
-     * LocalTime
+     * @param lunchStop a LocalTime that represents the end of lunch of a 
+     * shift
      */
     public void setLunchStop(LocalTime lunchStop) {
         this.lunchStop = lunchStop;
@@ -200,7 +198,8 @@ public class Shift {
 
     /**
      *
-     * @param lunchDeduct a void method that sets the lunch deduct as an int
+     * @param lunchDeduct an int that represents the deducted time of a lunch in
+     * a shift
      */
     public void setLunchDeduct(int lunchDeduct) {
         this.lunchDeduct = lunchDeduct;
@@ -208,7 +207,7 @@ public class Shift {
 
     /**
      *
-     * @param interval a void method sets the interval time of a shift as an int
+     * @param interval an int that represents the interval time of a shift
      */
     public void setInterval(int interval) {
         this.interval = interval;
@@ -216,8 +215,7 @@ public class Shift {
 
     /**
      *
-     * @param gracePeriod a void method that sets the the grace period allowed 
-     * as an int
+     * @param gracePeriod an int that represents the grace period of a shift
      */
     public void setGracePeriod(int gracePeriod) {
         this.gracePeriod = gracePeriod;
@@ -225,7 +223,7 @@ public class Shift {
 
     /**
      *
-     * @param dock a void method that sets the dock period of a shift as an int
+     * @param dock an int that represents the amount of dock time of a shift
      */
     public void setDock(int dock) {
         this.dock = dock;
