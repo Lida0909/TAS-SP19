@@ -25,7 +25,7 @@ public class Badge {
     }
     /**
      * The string description of the badge.
-     * @return     the string description of the badge as an id number and name
+     * @return the string description of the badge as an id number and name
      */
     @Override
 
@@ -37,7 +37,7 @@ public class Badge {
     
     /**
      * Getter method for id.
-     * 
+     *
      * @return the badge id as a String
      */
     public String getBadgeid(){
