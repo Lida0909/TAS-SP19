@@ -118,7 +118,8 @@ public class Punch {
         String pattern = "EEE MM/dd/yyyy HH:mm:ss";
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         String formattedDate = sdf.format(cal.getTime()).toUpperCase();
-        String originalTimestamptoString = "#" + getBadgeid() + " " + punchResults + " " + formattedDate + " (" + adjustMessage + ")";
+        String originalTimestamptoString = "#" + getBadgeid() + " " + punchResults 
+                + " " + formattedDate + " (" + adjustMessage + ")";
             
         return originalTimestamptoString;
     }
@@ -219,6 +220,24 @@ public class Punch {
         this.originalTimeStamp = originalTimeStamp;
     }
     
+    private Timestamp helperMethod1(LocalDateTime punch, int totalminutes) {
+        punch = punch.withHour(totalminutes/60);
+        punch = punch.withMinute(totalminutes%60);
+        punch = punch.withSecond(0);
+        Timestamp t = Timestamp.valueOf(punch);
+        
+        return t;
+    }
+    
+    private Timestamp helperMethod2(LocalDateTime punch, LocalTime time) {
+        punch = punch.withHour(time.getHour());
+        punch = punch.withMinute(time.getMinute());
+        punch = punch.withSecond(0);
+        Timestamp t = Timestamp.valueOf(punch);
+        
+        return t;
+    }
+    
     /**
      *
      * @param s a Shift that represents the shift that should be adjusted
@@ -256,56 +275,67 @@ public class Punch {
                   
                     if( punchTime.isAfter(lunchStart) && punchTime.isBefore(lunchStop)) {
                         adjustMessage = "Lunch Start";
-                        punchTimeStamp = punchTimeStamp.withHour(lunchStart.getHour());
-                        punchTimeStamp = punchTimeStamp.withMinute(lunchStart.getMinute());
-                        punchTimeStamp = punchTimeStamp.withSecond(0);
-                        adjustedTimeStamp = Timestamp.valueOf(punchTimeStamp);
-                        
+                        adjustedTimeStamp = helperMethod2(punchTimeStamp, lunchStart);                       
                     }
                     
                 }
                 
                 else if(weekend) {
                     
-                   if(punchTime.isBefore(shiftStop) ) {
+                    if(punchTime.isBefore(shiftStop) ) {
                         
                         if( (totalshiftStopMinutes - totalpunchTimeMinutes) <= gracePeriod ) {
                             adjustMessage = "Shift Stop";
-                            punchTimeStamp = punchTimeStamp.withHour(shiftStop.getHour());
-                            punchTimeStamp = punchTimeStamp.withMinute(shiftStop.getMinute());
-                            punchTimeStamp = punchTimeStamp.withSecond(0);
-                            adjustedTimeStamp = Timestamp.valueOf(punchTimeStamp);
+                            adjustedTimeStamp = helperMethod2(punchTimeStamp, shiftStop);
                         }
                         
                         else if ( (totalshiftStopMinutes - totalpunchTimeMinutes) > gracePeriod && 
                                 (totalshiftStopMinutes - totalpunchTimeMinutes) <= dock ) {
                             adjustMessage = "Shift Dock";
                             totalshiftStopMinutes = totalshiftStopMinutes - dock;
-                            punchTimeStamp = punchTimeStamp.withHour(totalshiftStopMinutes/60);
-                            punchTimeStamp = punchTimeStamp.withMinute(totalshiftStopMinutes%60);
-                            punchTimeStamp = punchTimeStamp.withSecond(0);
-                            adjustedTimeStamp = Timestamp.valueOf(punchTimeStamp);
+                            adjustedTimeStamp = helperMethod1(punchTimeStamp, totalshiftStopMinutes);  
                         }
                         
                         else {
                             adjustMessage = "Interval Round";
                             int timeInterval = totalshiftStopMinutes - totalpunchTimeMinutes;
-                            int a = timeInterval/interval;
-                            int b = timeInterval%interval;
-                            if(b <= 8) {
-                                totalshiftStopMinutes = totalshiftStopMinutes - (a*interval);
-                                punchTimeStamp = punchTimeStamp.withHour(totalshiftStopMinutes/60);
-                                punchTimeStamp = punchTimeStamp.withMinute(totalshiftStopMinutes%60);   
+                            int quotient = timeInterval/interval;
+                            int remainder = timeInterval%interval;
+                            if(remainder <= 8) {
+                                totalshiftStopMinutes = totalshiftStopMinutes - (quotient*interval);
+                                adjustedTimeStamp = helperMethod1(punchTimeStamp, totalshiftStopMinutes);
                             }
                             else {
-                                totalshiftStopMinutes = totalshiftStopMinutes - ((a+1)*interval);
-                                punchTimeStamp = punchTimeStamp.withHour(totalshiftStopMinutes/60);
-                                punchTimeStamp = punchTimeStamp.withMinute(totalshiftStopMinutes%60);
+                                totalshiftStopMinutes = totalshiftStopMinutes - ((quotient+1)*interval);
+                                adjustedTimeStamp = helperMethod1(punchTimeStamp, totalshiftStopMinutes);
                             }
-                            punchTimeStamp = punchTimeStamp.withSecond(0);
-                            adjustedTimeStamp = Timestamp.valueOf(punchTimeStamp);
                         }
-                   }
+                    }
+                    
+                    else if(punchTime.isAfter(shiftStop) ) { 
+                        
+                        int timeInterval = totalpunchTimeMinutes - totalshiftStopMinutes;
+                        int quotient = timeInterval/interval;
+                        int remainder = timeInterval%interval;
+                        
+                        if(timeInterval <= interval) {
+                            
+                            if( (remainder == 0) && punchTime.getSecond() < 60) {
+                                adjustMessage = "None";
+                            }
+                            else {
+                                adjustMessage = "Shift Stop";
+                            }
+                            totalpunchTimeMinutes = totalpunchTimeMinutes - (quotient*interval);
+                            adjustedTimeStamp = helperMethod1(punchTimeStamp, totalshiftStopMinutes);
+                        }
+                        else {
+                            adjustMessage = "Interval Round";
+                            totalpunchTimeMinutes = totalpunchTimeMinutes - ((quotient+1)*interval);
+                            adjustedTimeStamp = helperMethod1(punchTimeStamp, totalpunchTimeMinutes);
+                        }
+                        
+                    }
 
                 }
                 
@@ -319,39 +349,30 @@ public class Punch {
                         
                         if( (totalshiftStopMinutes - totalpunchTimeMinutes) <= gracePeriod ) {
                             adjustMessage = "Shift Stop";
-                            punchTimeStamp = punchTimeStamp.withHour(shiftStop.getHour());
-                            punchTimeStamp = punchTimeStamp.withMinute(shiftStop.getMinute());
-                            punchTimeStamp = punchTimeStamp.withSecond(0);
-                            adjustedTimeStamp = Timestamp.valueOf(punchTimeStamp);
+                            adjustedTimeStamp = helperMethod2(punchTimeStamp, shiftStop);
                         }
                         
                         else if ( (totalshiftStopMinutes - totalpunchTimeMinutes) > gracePeriod && 
                                 (totalshiftStopMinutes - totalpunchTimeMinutes) <= dock ) {
                             adjustMessage = "Shift Dock";
                             totalshiftStopMinutes = totalshiftStopMinutes - dock;
-                            punchTimeStamp = punchTimeStamp.withHour(totalshiftStopMinutes/60);
-                            punchTimeStamp = punchTimeStamp.withMinute(totalshiftStopMinutes%60);
-                            punchTimeStamp = punchTimeStamp.withSecond(0);
-                            adjustedTimeStamp = Timestamp.valueOf(punchTimeStamp);
+                            adjustedTimeStamp = helperMethod1(punchTimeStamp, totalshiftStopMinutes);
                         }
                         
                         else {
                             adjustMessage = "Interval Round";
                             int timeInterval = totalshiftStopMinutes - totalpunchTimeMinutes;
-                            int a = timeInterval/interval;
-                            int b = timeInterval%interval;
-                            if(b <= 8) {
-                                totalshiftStopMinutes = totalshiftStopMinutes - (a*interval);
-                                punchTimeStamp = punchTimeStamp.withHour(totalshiftStopMinutes/60);
-                                punchTimeStamp = punchTimeStamp.withMinute(totalshiftStopMinutes%60);   
+                            int quotient = timeInterval/interval;
+                            int remainder = timeInterval%interval;
+                            if(remainder <= 8) {
+                                totalshiftStopMinutes = totalshiftStopMinutes - (quotient*interval);
+                                adjustedTimeStamp = helperMethod1(punchTimeStamp, totalshiftStopMinutes);
                             }
                             else {
-                                totalshiftStopMinutes = totalshiftStopMinutes - ((a+1)*interval);
-                                punchTimeStamp = punchTimeStamp.withHour(totalshiftStopMinutes/60);
-                                punchTimeStamp = punchTimeStamp.withMinute(totalshiftStopMinutes%60);
+                                totalshiftStopMinutes = totalshiftStopMinutes - ((quotient+1)*interval);
+                                adjustedTimeStamp = helperMethod1(punchTimeStamp, totalshiftStopMinutes);
                             }
-                            punchTimeStamp = punchTimeStamp.withSecond(0);
-                            adjustedTimeStamp = Timestamp.valueOf(punchTimeStamp);
+               
                         }
                         
                     }
@@ -361,29 +382,25 @@ public class Punch {
                     else if( punchTime.isAfter(shiftStop) && (!weekend) ) {
                         
                         int timeInterval = totalpunchTimeMinutes - totalshiftStopMinutes;
-                        int a = timeInterval/interval;
-                        int b = timeInterval%interval;
+                        int quotient = timeInterval/interval;
+                        int remainder = timeInterval%interval;
                         
                         if(timeInterval <= interval) {
                             
-                            if( (b == 0) && punchTime.getSecond() < 60) {
+                            if( (remainder == 0) && punchTime.getSecond() < 60) {
                                 adjustMessage = "None";
                             }
                             else {
                                 adjustMessage = "Shift Stop";
                             }
-                            totalpunchTimeMinutes = totalpunchTimeMinutes - (a*interval);
-                            punchTimeStamp = punchTimeStamp.withHour(totalshiftStopMinutes/60);
-                            punchTimeStamp = punchTimeStamp.withMinute(totalshiftStopMinutes%60);   
+                            totalpunchTimeMinutes = totalpunchTimeMinutes - (quotient*interval);
+                            adjustedTimeStamp = helperMethod1(punchTimeStamp, totalshiftStopMinutes);
                         }
                         else {
                             adjustMessage = "Interval Round";
-                            totalpunchTimeMinutes = totalpunchTimeMinutes - ((a+1)*interval);
-                            punchTimeStamp = punchTimeStamp.withHour(totalpunchTimeMinutes/60);
-                            punchTimeStamp = punchTimeStamp.withMinute(totalpunchTimeMinutes%60);
+                            totalpunchTimeMinutes = totalpunchTimeMinutes - ((quotient+1)*interval);
+                            adjustedTimeStamp = helperMethod1(punchTimeStamp, totalpunchTimeMinutes);
                         }
-                        punchTimeStamp = punchTimeStamp.withSecond(0);
-                        adjustedTimeStamp = Timestamp.valueOf(punchTimeStamp);
                         
                     }
                                        
@@ -396,54 +413,42 @@ public class Punch {
                 
                 // CHECKS IF THE PUNCH IS CLOCKIN FOR THE LUNCH END
                 
-                if( punchTime.isAfter(lunchStart) && punchTime.isBefore(shiftStop)) {
+                if( punchTime.isAfter(lunchStart) && punchTime.isBefore(shiftStop) && (!weekend) ) {
                   
                     if( punchTime.isAfter(lunchStart) && punchTime.isBefore(lunchStop)) {
                         adjustMessage = "Lunch Stop";
-                        punchTimeStamp = punchTimeStamp.withHour(lunchStop.getHour());
-                        punchTimeStamp = punchTimeStamp.withMinute(lunchStop.getMinute());
-                        punchTimeStamp = punchTimeStamp.withSecond(0);
-                        adjustedTimeStamp = Timestamp.valueOf(punchTimeStamp);
-                        
+                        adjustedTimeStamp = helperMethod2(punchTimeStamp, lunchStop);    
                     }
                     
                 }
                 
                 // CHECKS IF THE GIVEN PUNCH IS CLOCK IN FOR THE SHIFT START
                 
-                else if( punchTime.isBefore(lunchStart) ) {
+                else if( punchTime.isBefore(lunchStart) && (!weekend) ) {
                     
                     // CHECKS IF THE PUNCH IS BEFORE THE SHIFT START
                     
                     if( punchTime.isBefore(shiftStart) ) {
                         
                         int timeInterval = totalshiftStartMinutes - totalpunchTimeMinutes;
-                        int a = timeInterval/interval;
-                        int b = timeInterval%interval;
-                        
-                        
+                        int quotient = timeInterval/interval;
+                        int remainder = timeInterval%interval;
+                                           
                         if(timeInterval <= interval) {
                             adjustMessage = "Shift Start";
-                            punchTimeStamp = punchTimeStamp.withHour(shiftStart.getHour());
-                            punchTimeStamp = punchTimeStamp.withMinute(shiftStart.getMinute());   
+                            adjustedTimeStamp = helperMethod2(punchTimeStamp, shiftStart);
                         }
                         else {
-                            if(b <= 7) {
-                                adjustMessage = "Interval Round";
-                                totalpunchTimeMinutes = totalshiftStartMinutes - ((a)*interval);
-                                punchTimeStamp = punchTimeStamp.withHour(totalpunchTimeMinutes/60);
-                                punchTimeStamp = punchTimeStamp.withMinute(totalpunchTimeMinutes%60);
+                            adjustMessage = "Interval Round";
+                            if(remainder <= 7) {
+                                totalpunchTimeMinutes = totalshiftStartMinutes - ((quotient)*interval);
+                                adjustedTimeStamp = helperMethod1(punchTimeStamp, totalpunchTimeMinutes);
                             }
                             else {
-                                adjustMessage = "Interval Round";
-                                totalpunchTimeMinutes = totalshiftStartMinutes - ((a+1)*interval);
-                                punchTimeStamp = punchTimeStamp.withHour(totalpunchTimeMinutes/60);
-                                punchTimeStamp = punchTimeStamp.withMinute(totalpunchTimeMinutes%60);
+                                totalpunchTimeMinutes = totalshiftStartMinutes - ((quotient+1)*interval);
+                                adjustedTimeStamp = helperMethod1(punchTimeStamp, totalpunchTimeMinutes);
                             }
-                        }
-                        punchTimeStamp = punchTimeStamp.withSecond(0);
-                        adjustedTimeStamp = Timestamp.valueOf(punchTimeStamp);
-                        
+                        }    
                     }
                     
                     // CHECKS IF THE PUNCH IS AFTER THE SHIFT START
@@ -452,46 +457,99 @@ public class Punch {
                     
                         if( (totalpunchTimeMinutes - totalshiftStartMinutes) <= gracePeriod ) {
                             adjustMessage = "Shift Start";
-                            punchTimeStamp = punchTimeStamp.withHour(shiftStart.getHour());
-                            punchTimeStamp = punchTimeStamp.withMinute(shiftStart.getMinute());
-                            punchTimeStamp = punchTimeStamp.withSecond(0);
-                            adjustedTimeStamp = Timestamp.valueOf(punchTimeStamp);
+                            adjustedTimeStamp = helperMethod2(punchTimeStamp, shiftStart);
                         }
 
                         else if ( (totalpunchTimeMinutes - totalshiftStartMinutes) <= dock ) {
                             adjustMessage = "Shift Dock";
                             totalshiftStartMinutes = totalshiftStartMinutes + dock;
-                            punchTimeStamp = punchTimeStamp.withHour(totalshiftStartMinutes/60);
-                            punchTimeStamp = punchTimeStamp.withMinute(totalshiftStartMinutes%60);
-                            punchTimeStamp = punchTimeStamp.withSecond(0);
-                            adjustedTimeStamp = Timestamp.valueOf(punchTimeStamp);
+                            adjustedTimeStamp = helperMethod1(punchTimeStamp, totalshiftStartMinutes);
                         }
 
                         else {
                             adjustMessage = "Interval Round";
                             int timeInterval = totalpunchTimeMinutes - totalshiftStartMinutes;
-                            int a = timeInterval/interval;
-                            int b = timeInterval%interval;
-                            if(b <= 7) {
-                                totalshiftStartMinutes = totalshiftStartMinutes + (a*interval);
-                                punchTimeStamp = punchTimeStamp.withHour(totalshiftStartMinutes/60);
-                                punchTimeStamp = punchTimeStamp.withMinute(totalshiftStartMinutes%60);   
+                            int quotient = timeInterval/interval;
+                            int remainder = timeInterval%interval;
+                            if(remainder <= 7) {
+                                totalshiftStartMinutes = totalshiftStartMinutes + (quotient*interval);
+                                adjustedTimeStamp = helperMethod1(punchTimeStamp, totalshiftStartMinutes);
                             }
                             else {
-                                totalshiftStartMinutes = totalshiftStartMinutes + ((a+1)*interval);
-                                punchTimeStamp = punchTimeStamp.withHour(totalshiftStartMinutes/60);
-                                punchTimeStamp = punchTimeStamp.withMinute(totalshiftStartMinutes%60);
+                                totalshiftStartMinutes = totalshiftStartMinutes + ((quotient+1)*interval);
+                                adjustedTimeStamp = helperMethod1(punchTimeStamp, totalshiftStartMinutes);
+                            }                        
+                        }
+                        
+                    }
+                    
+                }
+                
+                else if(weekend) {
+                    
+                    if( punchTime.isBefore(shiftStart) ) {
+                        
+                        int timeInterval = totalshiftStartMinutes - totalpunchTimeMinutes;
+                        int quotient = timeInterval/interval;
+                        int remainder = timeInterval%interval;
+                                           
+                        if(timeInterval <= interval) {
+                            adjustMessage = "Shift Start";
+                            adjustedTimeStamp = helperMethod2(punchTimeStamp, shiftStart);
+                        }
+                        else {
+                            adjustMessage = "Interval Round";
+                            if(remainder <= 7) {
+                                totalpunchTimeMinutes = totalshiftStartMinutes - ((quotient)*interval);
+                                adjustedTimeStamp = helperMethod1(punchTimeStamp, totalpunchTimeMinutes);
                             }
-                            punchTimeStamp = punchTimeStamp.withSecond(0);
-                            adjustedTimeStamp = Timestamp.valueOf(punchTimeStamp);
+                            else {
+                                totalpunchTimeMinutes = totalshiftStartMinutes - ((quotient+1)*interval);
+                                adjustedTimeStamp = helperMethod1(punchTimeStamp, totalpunchTimeMinutes);
+                            }
+                        }    
+                        
+                    }
+                    
+                    else if( punchTime.isAfter(shiftStart) ) {
+                        
+                        if( (totalpunchTimeMinutes - totalshiftStartMinutes) <= gracePeriod ) {
+                            adjustMessage = "Shift Start";
+                            adjustedTimeStamp = helperMethod2(punchTimeStamp, shiftStart);
                         }
 
+                        else if ( (totalpunchTimeMinutes - totalshiftStartMinutes) <= dock ) {
+                            adjustMessage = "Shift Dock";
+                            totalshiftStartMinutes = totalshiftStartMinutes + dock;
+                            adjustedTimeStamp = helperMethod1(punchTimeStamp, totalshiftStartMinutes);
+                        }
+
+                        else {
+                            adjustMessage = "Interval Round";
+                            int timeInterval = totalpunchTimeMinutes - totalshiftStartMinutes;
+                            int quotient = timeInterval/interval;
+                            int remainder = timeInterval%interval;
+                            if(remainder <= 7) {
+                                totalshiftStartMinutes = totalshiftStartMinutes + (quotient*interval);
+                                adjustedTimeStamp = helperMethod1(punchTimeStamp, totalshiftStartMinutes);
+                            }
+                            else {
+                                totalshiftStartMinutes = totalshiftStartMinutes + ((quotient+1)*interval);
+                                adjustedTimeStamp = helperMethod1(punchTimeStamp, totalshiftStartMinutes);
+                            }                        
+                        }
+                        
                     }
                     
                 }
                 
                 break;
                 
+                
+            case 2:
+                adjustMessage = "Time Out";
+                adjustedTimeStamp = helperMethod2(punchTimeStamp, shiftStop);
+                break;
                 
             default:
                 System.out.println("ERROR");
