@@ -634,8 +634,7 @@ public class TASDatabase {
                             
                         }
                         
-                        resultset.next();
-                        
+                        resultset.next();                       
                         list.add(new Punch(resultset.getInt(1)
                                 ,resultset.getInt(2),resultset.getString(3)
                                 ,resultset.getTimestamp(4)
