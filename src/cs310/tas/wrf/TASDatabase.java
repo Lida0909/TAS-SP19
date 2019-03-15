@@ -283,7 +283,7 @@ public class TASDatabase {
 
         Punch p = new Punch(id, terminalID, badgeID, originalTimestamp, punchTypeID);
 
-        
+        return p;
     }
     
     /**
