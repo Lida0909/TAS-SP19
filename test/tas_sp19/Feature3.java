@@ -74,7 +74,7 @@ public class Feature3 {
         
         assertEquals("#F1EE0555 CLOCKED OUT: SAT 08/11/2018 12:04:02", p2.printOriginalTimestamp());
 
-        assertEquals("#F1EE0555 CLOCKED OUT: SAT 08/11/2018 12:00:00 (Interval Round)", p2.printAdjustedTimestamp()); //Lunch Start instead of Interval Round
+        assertEquals("#F1EE0555 CLOCKED OUT: SAT 08/11/2018 12:00:00 (Interval Round)", p2.printAdjustedTimestamp()); 
 
         
     }
