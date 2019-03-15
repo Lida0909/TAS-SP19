@@ -118,8 +118,8 @@ public class Punch {
         String pattern = "EEE MM/dd/yyyy HH:mm:ss";
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         String formattedDate = sdf.format(cal.getTime()).toUpperCase();
-        String originalTimestamptoString = "#" + getBadgeid() + " " + punchResults 
-                + " " + formattedDate + " (" + adjustMessage + ")";
+
+        String originalTimestamptoString = "#" + getBadgeid() + " " + punchResults + " " + formattedDate + " (" + adjustMessage + ")";
             
         return originalTimestamptoString;
     }
@@ -220,6 +220,7 @@ public class Punch {
         this.originalTimeStamp = originalTimeStamp;
     }
     
+
     private Timestamp helperMethod1(LocalDateTime punch, int totalminutes) {
         punch = punch.withHour(totalminutes/60);
         punch = punch.withMinute(totalminutes%60);
@@ -238,6 +239,7 @@ public class Punch {
         return t;
     }
     
+
     /**
      *
      * @param s a Shift that represents the shift that should be adjusted
@@ -338,6 +340,7 @@ public class Punch {
                     }
 
                 }
+                
                 
                 //CHECKS IF THE PUNCH IS CLOCKOUT FOR THE SHIFT END
                 
@@ -449,6 +452,7 @@ public class Punch {
                                 adjustedTimeStamp = helperMethod1(punchTimeStamp, totalpunchTimeMinutes);
                             }
                         }    
+
                     }
                     
                     // CHECKS IF THE PUNCH IS AFTER THE SHIFT START
@@ -484,7 +488,7 @@ public class Punch {
                     }
                     
                 }
-                
+            
                 else if(weekend) {
                     
                     if( punchTime.isBefore(shiftStart) ) {
@@ -542,7 +546,7 @@ public class Punch {
                     }
                     
                 }
-                
+
                 break;
                 
                 

@@ -37,6 +37,7 @@ public class Badge {
     
     /**
      * Getter method for id.
+     *
      * @return the badge id as a String
      */
     public String getBadgeid(){

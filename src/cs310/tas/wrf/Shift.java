@@ -129,6 +129,7 @@ public class Shift {
      * determine if the time should be pushed to the beginning or end of a shift
      * as an int
      */
+
     public int getInterval() {
         return interval;
     }
@@ -141,20 +142,24 @@ public class Shift {
         return lunchDeduct;
     }
     
+
     /**
      *
      * @return the grace period for checking in late or checking out early as an
      * int
      */
+
     public int getGracePeriod() {
         return gracePeriod;
     }
     
+
     /**
      *
      * @return the time after grace period that will push you forward or
      * backwards in the interval round as an int
      */
+
     public int getDock() {
         return dock;
     }
@@ -205,26 +210,32 @@ public class Shift {
         this.lunchDeduct = lunchDeduct;
     }
 
+
     /**
      *
      * @param interval an int that represents the interval time of a shift
      */
+
     public void setInterval(int interval) {
         this.interval = interval;
     }
+
 
     /**
      *
      * @param gracePeriod an int that represents the grace period of a shift
      */
+
     public void setGracePeriod(int gracePeriod) {
         this.gracePeriod = gracePeriod;
     }
+
 
     /**
      *
      * @param dock an int that represents the amount of dock time of a shift
      */
+
     public void setDock(int dock) {
         this.dock = dock;
     }

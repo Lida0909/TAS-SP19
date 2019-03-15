@@ -279,11 +279,9 @@ public class TASDatabase {
             
         }
         
-        Punch p = new Punch(id, terminalID, badgeID, originalTimestamp,
-                punchTypeID);
-               
+
+        Punch p = new Punch(id, terminalID, badgeID, originalTimestamp, punchTypeID);
         return p;
-        
     }
     
     /**
@@ -309,6 +307,7 @@ public class TASDatabase {
         
             /* Prepare Select Query */
                 
+
             query = "SELECT description,start,stop,`interval`,graceperiod,dock,"
                     + "lunchstart,lunchstop,lunchdeduct FROM tas.shift WHERE id"
                     + " = "+ shiftID;
@@ -342,7 +341,9 @@ public class TASDatabase {
                        startingTime = resultset.getTime(2).toString().split(":");
                        stoppingTime = resultset.getTime(3).toString().split(":");
                        interval = resultset.getInt(4);
+
                        gracePeriod = resultset.getInt(5);  
+
                        dock = resultset.getInt(6);
                        lunchStart = resultset.getTime(7).toString().split(":");
                        lunchStop = resultset.getTime(8).toString().split(":");
