@@ -6,14 +6,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
 /**
- *
- * @author Adam Stith
+ * The TASDatabase class is used by the TAS to connect to the database
+ * and to input or retrieve information from the database.
+ * @author War Room F
  */
 public class TASDatabase {
     
@@ -32,10 +32,13 @@ public class TASDatabase {
     boolean hasresults;
     int resultCount, columnCount, updateCount = 0;
     
-    
+    /**
+     * Opens a new connection to the SQL sever that
+     * uses the connection variables (server, username, password) to initiate 
+     * the connection.
+     */
     public TASDatabase()   {
         
-
         try {
 
             System.out.println("Connecting to " + server + "...");
@@ -68,6 +71,9 @@ public class TASDatabase {
         
     }
     
+    /**
+     * Closes the connection to the SQL sever.
+     */
     public void close() {
         
         try {
@@ -86,6 +92,12 @@ public class TASDatabase {
         
     }
     
+    /**
+     * Retrieves a Badge from the database.
+     * @param badgeID a String that represents the ID number for an employee
+     * @return a new Badge object created from the database information based
+     * on the given badgeID.
+     */
     public Badge getBadge(String badgeID) {
         
         String id = null;
@@ -174,6 +186,12 @@ public class TASDatabase {
         
     }
     
+    /**
+     * Retrieves a Punch from the database.
+     * @param punchID an int that represents the ID number of a Punch
+     * @return a new Punch object created from the database information based
+     * on the given punchID.
+     */
     public Punch getPunch(int punchID) {
         
         int id = 0, terminalID = 0, punchTypeID = 0;
@@ -261,14 +279,19 @@ public class TASDatabase {
             
         }
         
+
+
         Punch p = new Punch(id, terminalID, badgeID, originalTimestamp, punchTypeID);
-      
-        
-        
+
         return p;
-        
     }
     
+    /**
+     * Retrieves a Shift from the database.
+     * @param shiftID an int that represents the ID number of a Shift
+     * @return a new Shift object created from the database information based
+     * on the given shiftID
+     */
     public Shift getShift(int shiftID) {
         
         String description = null; 
@@ -286,7 +309,8 @@ public class TASDatabase {
         
             /* Prepare Select Query */
                 
-            query = "SELECT description,start,stop,`interval`,graceperiod, dock,"
+
+            query = "SELECT description,start,stop,`interval`,graceperiod,dock,"
                     + "lunchstart,lunchstop,lunchdeduct FROM tas.shift WHERE id"
                     + " = "+ shiftID;
 
@@ -319,7 +343,9 @@ public class TASDatabase {
                        startingTime = resultset.getTime(2).toString().split(":");
                        stoppingTime = resultset.getTime(3).toString().split(":");
                        interval = resultset.getInt(4);
-                       gracePeriod = resultset.getInt(5);
+
+                       gracePeriod = resultset.getInt(5);  
+
                        dock = resultset.getInt(6);
                        lunchStart = resultset.getTime(7).toString().split(":");
                        lunchStop = resultset.getTime(8).toString().split(":");
@@ -386,6 +412,12 @@ public class TASDatabase {
         
     }
     
+    /**
+     * Retrieves a Shift from the database.
+     * @param badge a Badge object that represents an employee's badge
+     * @return a new Shift object created from the database information based
+     * on the given Badge object
+     */
     public Shift getShift(Badge badge) {
         
         Shift s = null;
@@ -445,6 +477,12 @@ public class TASDatabase {
         
     }
     
+    /**
+     * Inserts a new Punch into the database.
+     * @param p a Punch object that represents an individual time clock punch.
+     * @return the newPunchID that is assigned by the database when a new punch 
+     * is inserted
+     */
     public int insertPunch(Punch p) {
         
         String badgeID = p.getBadgeid();
@@ -544,6 +582,14 @@ public class TASDatabase {
         
     }
     
+    /**
+     * Retrieves a list of Punches from a single day from the database.
+     * @param b a Badge object that represents an employee's badge
+     * @param ts a long that represents the amount of milliseconds from a 
+     * timestamp 
+     * @return an ArrayList object that contains all of the punches from the
+     * date represented in the 'ts' parameter
+     */
     public ArrayList getDailyPunchList(Badge b, long ts) {
         
         ArrayList list = new ArrayList();
@@ -619,6 +665,4 @@ public class TASDatabase {
         
     }
         
-} 
-    
-
+}
