@@ -625,16 +625,22 @@ public class TASDatabase {
                     /* Get ResultSet */
                         
                     resultset = pstSelect.getResultSet();                    
-                    
-                    
+                                      
                     for(int i = 1; i < columnCount; i++) {
                         
+                        if (resultset.isLast()) {
+                            
+                            break;  
+                            
+                        }
+                        
                         resultset.next();
+                        
                         list.add(new Punch(resultset.getInt(1)
                                 ,resultset.getInt(2),resultset.getString(3)
                                 ,resultset.getTimestamp(4)
                                 ,resultset.getInt(5)));
-                    
+                        
                     }
         }        
         
