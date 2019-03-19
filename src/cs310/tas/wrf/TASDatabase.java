@@ -8,7 +8,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 /**
@@ -595,11 +594,8 @@ public class TASDatabase {
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTimeInMillis(ts);
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        String date = format.format(cal.getTime());
-        cal.add( Calendar.DATE, 1 );
-        String datePlus1 = format.format(cal.getTime());
-        int lastPunchType = 0;
-        
+        String date = format.format(cal.getTime());        
+
         try {
         
             /* Prepare Select Query */
@@ -633,7 +629,7 @@ public class TASDatabase {
                     for(int i = 1; i < columnCount; i++) {
                         
                         if (resultset.isLast()) {
-                            lastPunchType = resultset.getInt(5);
+                            
                             break;  
                             
                         }
@@ -643,79 +639,6 @@ public class TASDatabase {
                                 ,resultset.getInt(2),resultset.getString(3)
                                 ,resultset.getTimestamp(4)
                                 ,resultset.getInt(5)));
-                        
-                    }
-        }        
-        
-        catch (Exception e) {
-            
-            System.err.println(e.toString());
-            
-        }
-        
-        /* Close Other Database Objects */
-        
-        finally {
-            
-            if (resultset != null) { try { resultset.close(); resultset = null; 
-            } catch (Exception e) {} }
-            
-            if (pstSelect != null) { try { pstSelect.close(); pstSelect = null; 
-            } catch (Exception e) {} }
-            
-            if (pstUpdate != null) { try { pstUpdate.close(); pstUpdate = null; 
-            } catch (Exception e) {} }
-            
-        }
-        
-        try {
-        
-            /* Prepare Select Query */
-            
-            query = "SELECT id,terminalid,badgeid,originaltimestamp,"
-                    + "punchtypeid FROM tas.punch WHERE badgeid = '"
-                    + b.getBadgeid() + "' AND originaltimestamp LIKE '%"
-                    + datePlus1 + "%'";
-            
-            
-
-            pstSelect = conn.prepareStatement(query);
-                
-            /* Execute Select Query */
-                
-            //System.out.println("Submitting Query ...");
-                
-            hasresults = pstSelect.execute();                
-            resultset = pstSelect.getResultSet();
-            metadata = resultset.getMetaData();
-            columnCount = metadata.getColumnCount(); 
-            
-            /* Get Results */
-   
-            System.out.println("Getting Results ...");
-            
-                    /* Get ResultSet */
-                        
-                    resultset = pstSelect.getResultSet();                    
-                                      
-                    for(int i = 1; i < columnCount; i++) {
-                        
-                        if (resultset.isLast() ) {
-                            
-                            break;  
-                            
-                        }
-                        
-                        resultset.next(); 
-                        
-                        if (resultset.getInt(5) == TASLogic.CLOCKOUT && lastPunchType == TASLogic.CLOCKIN) {
-                                                 
-                        list.add(new Punch(resultset.getInt(1)
-                                ,resultset.getInt(2),resultset.getString(3)
-                                ,resultset.getTimestamp(4)
-                                ,resultset.getInt(5)));
-                        
-                        }
                         
                     }
         }        
