@@ -164,7 +164,7 @@ public class Punch {
      * @return the original timestamp a long
      */
     public long getOriginaltimestamp() {
-        return originalTimeStamp.getTime() / 1000;
+        return originalTimeStamp.getTime();
     }
     
     /**
@@ -173,6 +173,14 @@ public class Punch {
      */
     public Timestamp getOriginaltimestamp2() {
         return originalTimeStamp;
+    }
+    
+    /**
+     * Getter method for adjustedTimeStamp
+     * @return the adjusted timestamp as a Timestamp
+     */
+    public Timestamp getAdjustedTimeStamp() {
+        return adjustedTimeStamp;
     }
     
     // Setter Methods
