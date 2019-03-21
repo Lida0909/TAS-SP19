@@ -175,14 +175,6 @@ public class Punch {
         return originalTimeStamp;
     }
     
-    /**
-     * Getter method for adjustedTimeStamp
-     * @return the adjusted timestamp as a Timestamp
-     */
-    public Timestamp getAdjustedTimeStamp() {
-        return adjustedTimeStamp;
-    }
-    
     // Setter Methods
 
     /**
