@@ -19,12 +19,8 @@ public class TASLogic {
      */
     public static final int CLOCKOUT = 0;
     
-    /**
-     * Calculates the total minutes accrued by an employee on a single shift.
-     * @param dailypunchlist an ArrayList of Punch objects for a shift
-     * @param shift a shift object containing the shift rules
-     * @return the total amount of minutes accrued in one shift as an int
-     */
+    static int lunchTime = 30;
+    
     public static int calculateTotalMinutes(ArrayList<Punch> dailypunchlist, 
             Shift shift) {
 
@@ -78,6 +74,7 @@ public class TASLogic {
         
         return totalMin;
         
-    }    
+    }
     
 }
+
