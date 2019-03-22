@@ -3,14 +3,30 @@ package cs310.tas.wrf;
 import java.util.ArrayList;
 
 /**
- *
+ * The TASLogic class contains functions that will be needed for use by  
+ * payroll, mangers, etc.
  * @author War Room F
  */
 public class TASLogic {
     
+
+    /**
+     * Constant variable for the punch type of a clock-in.
+     */
     public static final int CLOCKIN = 1;
+
+    /**
+     * Constant variable for the punch type of a clock-out.
+     */
     public static final int CLOCKOUT = 0;
     
+    /**
+     * Calculates the total minutes accrued by an employee on a single shift.
+     * @param dailypunchlist an ArrayList of Punch objects for a shift
+     * @param shift a shift object containing the shift rules
+     * @return the total amount of minutes accrued in one shift as an int
+     */
+
     public static int calculateTotalMinutes(ArrayList<Punch> dailypunchlist, 
             Shift shift) {
 
@@ -19,6 +35,9 @@ public class TASLogic {
         long inTime = 0;
         long outTime = 0;
         int punchCounter = 0;
+
+        int lunchTime = 30;
+
         
         for(int i = 0; i < dailypunchlist.size(); i++) {
             
@@ -57,7 +76,8 @@ public class TASLogic {
         
         if (totalMin > shift.getlunchDeduct() && punchCounter <= 3) {
             
-            totalMin -= 30;
+            totalMin -= lunchTime;
+
             
         }
         
