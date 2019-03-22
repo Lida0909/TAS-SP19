@@ -9,6 +9,7 @@ import java.util.ArrayList;
  */
 public class TASLogic {
     
+
     /**
      * Constant variable for the punch type of a clock-in.
      */
@@ -25,6 +26,7 @@ public class TASLogic {
      * @param shift a shift object containing the shift rules
      * @return the total amount of minutes accrued in one shift as an int
      */
+
     public static int calculateTotalMinutes(ArrayList<Punch> dailypunchlist, 
             Shift shift) {
 
@@ -33,7 +35,9 @@ public class TASLogic {
         long inTime = 0;
         long outTime = 0;
         int punchCounter = 0;
+
         int lunchTime = 30;
+
         
         for(int i = 0; i < dailypunchlist.size(); i++) {
             
@@ -73,6 +77,7 @@ public class TASLogic {
         if (totalMin > shift.getlunchDeduct() && punchCounter <= 3) {
             
             totalMin -= lunchTime;
+
             
         }
         
