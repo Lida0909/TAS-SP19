@@ -1,6 +1,8 @@
 package cs310.tas.wrf;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import org.json.simple.*;
 
 /**
  * The TASLogic class contains functions that will be needed for use by  
@@ -84,5 +86,28 @@ public class TASLogic {
         return totalMin;
         
     }    
+    
+    /**
+     * 
+     * @param dailyPunchList
+     * @return 
+     */
+    public static String getPunchListAsJSON(ArrayList<Punch> dailyPunchList){
+        ArrayList<HashMap<String, String>> jsonData = new ArrayList<>();
+        for(Punch p : dailyPunchList){
+            HashMap<String, String> punchData = new HashMap<>();
+            punchData.put("id", String.valueOf(p.getId()));
+            punchData.put("badgeid", p.getBadgeid());
+            punchData.put("terminalid", String.valueOf(p.getTerminalid()));
+            punchData.put("punchtypeid", String.valueOf(p.getPunchtypeid()));
+            punchData.put("punchdata", p.getAdjustMessage());
+            punchData.put("originaltimestamp", Long.toString(p.getOriginaltimestamp()));
+            punchData.put("adjustedtimestamp", Long.toString(p.getAdjustedTimeStamp().getTime()));
+            
+            jsonData.add(punchData);
+            
+        }
+        return JSONValue.toJSONString(jsonData);
+    }
     
 }
