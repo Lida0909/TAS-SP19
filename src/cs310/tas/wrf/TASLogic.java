@@ -16,7 +16,7 @@ public class TASLogic {
      * Constant variable for the punch type of a clock-in.
      */
     public static final int CLOCKIN = 1;
- 
+
     /**
      * Constant variable for the punch type of a clock-out.
      */

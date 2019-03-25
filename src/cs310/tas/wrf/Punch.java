@@ -165,10 +165,12 @@ public class Punch {
      */
     public long getOriginaltimestamp() {
         return originalTimeStamp.getTime();
+
     }
     
     public String getAdjustMessage(){
         return adjustMessage;
+
     }
     
     /**
