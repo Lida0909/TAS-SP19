@@ -164,7 +164,13 @@ public class Punch {
      * @return the original timestamp a long
      */
     public long getOriginaltimestamp() {
-        return originalTimeStamp.getTime() / 1000;
+        return originalTimeStamp.getTime();
+
+    }
+    
+    public String getAdjustMessage(){
+        return adjustMessage;
+
     }
     
     /**

@@ -488,7 +488,12 @@ public class TASDatabase {
         int terminalID = p.getTerminalid();
         int punchTypeID = p.getPunchtypeid();
         int newPunchID = p.getId();
-        Timestamp originalTimeStamp = p.getOriginaltimestamp2();
+        long originalTimeStampLong = p.getOriginaltimestamp();
+        
+        Timestamp originalTimeStamp = new Timestamp(originalTimeStampLong);
+        String pattern = "yyyy-MM-dd HH:mm:ss";
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+        String formattedots  = sdf.format(originalTimeStamp);
         
         try {
             
@@ -496,9 +501,11 @@ public class TASDatabase {
 
             query = "INSERT INTO punch (terminalid,badgeid,originaltimestamp,"
                     + "punchtypeid) VALUES('" + terminalID 
-                    + "','" + badgeID + "','" + originalTimeStamp
+                    + "','" + badgeID + "','" + formattedots
                     + "','" + punchTypeID + "')";
 
+            System.out.println(query);
+            
             pstSelect = conn.prepareStatement(query);
                 
             /* Execute Select Query */
