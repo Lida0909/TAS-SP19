@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -751,5 +752,245 @@ public class TASDatabase {
         return list;
         
     }
+    
+     private long adjust(long timestamp) {
+        
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTimeInMillis(timestamp);
+        Timestamp t = new Timestamp(timestamp);
+        LocalDateTime l = t.toLocalDateTime();
+        String day = l.getDayOfWeek().toString();
+        int dayofMonth = cal.get(Calendar.DATE);
+        switch(day) {
+            case "MONDAY":
+                cal.set(Calendar.DATE, dayofMonth-1);
+                break;
+            case "TUESDAY":
+                cal.set(Calendar.DATE, dayofMonth-2);
+                break;
+            case "WEDNESDAY":
+                cal.set(Calendar.DATE, dayofMonth-3);
+                break;
+            case "THURSDAY":
+                cal.set(Calendar.DATE, dayofMonth-4);
+                break;
+            case "FRIDAY":
+                cal.set(Calendar.DATE, dayofMonth-5);
+                break;
+            case "SATURDAY":
+                cal.set(Calendar.DATE, dayofMonth-6);
+                break;
+        } 
+        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        
+        return cal.getTimeInMillis();
+    }
+    
+    public ArrayList getPayPeriodPunchList(Badge b, long timestamp) {
+        
+        ArrayList<Punch> list = new ArrayList<Punch>();
+        GregorianCalendar cal1 = new GregorianCalendar();
+        cal1.setTimeInMillis(adjust(timestamp));
+        
+        GregorianCalendar cal2 = new GregorianCalendar();
+        cal2.setTimeInMillis(adjust(timestamp));
+        int dayofMonth = cal2.get(Calendar.DATE);
+        cal2.set(Calendar.DATE, dayofMonth+6);
+        
+        try {
+        
+            /* Prepare Select Query */
+            
+            query = "SELECT * FROM punch WHERE badgeid = '" + b.getBadgeid() + "'";
+            pstSelect = conn.prepareStatement(query);
+                
+            /* Execute Select Query */
+
+            hasresults = pstSelect.execute();                
+            resultset = pstSelect.getResultSet();
+            metadata = resultset.getMetaData();
+            columnCount = metadata.getColumnCount(); 
+
+            /* Get ResultSet */
+
+            resultset = pstSelect.getResultSet();                    
+
+            while(resultset.next()) {
+                
+                Timestamp ts = resultset.getTimestamp(4);
+                GregorianCalendar cal3 = new GregorianCalendar();
+                cal3.setTimeInMillis(ts.getTime());
+                
+                if(cal3.after(cal1) && cal3.before(cal2)) {
+                    list.add(new Punch(resultset.getInt(1),resultset.getInt(2),resultset.getString(3)
+                        ,resultset.getTimestamp(4),resultset.getInt(5)));
+                }
+
+            }
+        }        
+        
+        catch (Exception e) {
+            
+            System.err.println(e.toString());
+            
+        }
+        
+        /* Close Other Database Objects */
+        
+        finally {
+            
+            if (resultset != null) { try { resultset.close(); resultset = null; 
+            } catch (Exception e) {} }
+            
+            if (pstSelect != null) { try { pstSelect.close(); pstSelect = null; 
+            } catch (Exception e) {} }
+            
+            if (pstUpdate != null) { try { pstUpdate.close(); pstUpdate = null; 
+            } catch (Exception e) {} }
+            
+        }
+       
+        return list;
+        
+    }
+    
+    public Absenteeism getAbsenteeism(String badgeid, long timestamp) {
+        
+        String badgeID = "";
+        long ts = 0;
+        double percentage = 0;
+        
+        Timestamp payperiod = new Timestamp(adjust(timestamp));
+        String s = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(payperiod);
+        
+        try {
+        
+            /* Prepare Select Query */
+                
+            query = "SELECT * FROM absenteeism WHERE badgeid = '" + badgeid + "' AND payperiod = '" + s + "'"; 
+            pstSelect = conn.prepareStatement(query);
+                
+            /* Execute Select Query */
+                
+            hasresults = pstSelect.execute();                
+            resultset = pstSelect.getResultSet();
+            metadata = resultset.getMetaData();
+            columnCount = metadata.getColumnCount(); 
+            
+            /* Get Results */
+                
+            while ( hasresults || pstSelect.getUpdateCount() != -1 ) {
+
+                if ( hasresults ) {
+  
+                    resultset = pstSelect.getResultSet();                
+                    while(resultset.next()) {                 
+                        badgeID = resultset.getString(1);
+                        Timestamp t = resultset.getTimestamp(2);
+                        GregorianCalendar cal = new GregorianCalendar();
+                        cal.setTimeInMillis(t.getTime());
+                        ts = cal.getTimeInMillis();
+                        percentage = resultset.getDouble(3);
+                    }
+                        
+                }
+
+                else {
+
+                    resultCount = pstSelect.getUpdateCount();  
+
+                    if ( resultCount == -1 ) {
+                        break;
+                    }
+                        
+                }
+                   
+                /* Check for More Data */
+
+                hasresults = pstSelect.getMoreResults();
+
+            }
+
+        }
+        
+        catch (Exception e) {
+            
+            System.err.println(e.toString());
+            
+        }
+        
+        /* Close Other Database Objects */
+        
+        finally {
+            
+            if (resultset != null) { try { resultset.close(); resultset = null; 
+            } catch (Exception e) {} }
+            
+            if (pstSelect != null) { try { pstSelect.close(); pstSelect = null; 
+            } catch (Exception e) {} }
+            
+            if (pstUpdate != null) { try { pstUpdate.close(); pstUpdate = null; 
+            } catch (Exception e) {} }
+            
+        }
+        
+        Absenteeism a = new Absenteeism(badgeid, ts, percentage);  
+        return a;
+        
+    }
+    
+    public void insertAbsenteeism(Absenteeism a) {
+        
+        String badgeID = a.getBadgeid();
+        long ts = a.getPayperiod();
+        double percentage = a.getPercentage();
+        
+        Timestamp payperiod = new Timestamp(ts);
+        String s = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(payperiod);
+        
+        try {
+            
+            /* Prepare Insert/Update Query */
+            
+            if(getAbsenteeism(badgeID, ts) == null) {
+                query = "INSERT INTO absenteeism (badgeid, payperiod, percentage) VALUES('" + badgeID
+                    + "', '" + s + "', '" + percentage + "')";
+            }
+            else {
+                query = "UPDATE absenteeism SET percentage = '" + percentage + 
+                        "' WHERE badgeid = '" + badgeID + "' AND payperiod = '" + s + "'";
+            }
+
+            pstSelect = conn.prepareStatement(query);
+                
+            /* Execute Select Query */
+                
+            System.out.println("Submitting Query ...");
+                
+            hasresults = pstSelect.execute();
+            
+            System.out.println("Absenteeism Inserted!");
+       
+        }
+        
+        catch (Exception e) {
+            
+            System.err.println(e.toString());
+            
+        }
+        
+        /* Close Other Database Objects */
+        
+        finally {
+
+            if (pstSelect != null) { try { pstSelect.close(); pstSelect = null; 
+            } catch (Exception e) {} }
+            
+        }
+        
+    }
         
 }
+        
