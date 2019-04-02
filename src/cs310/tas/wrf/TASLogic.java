@@ -1,8 +1,10 @@
 package cs310.tas.wrf;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import org.json.simple.*;
 
@@ -115,40 +117,44 @@ public class TASLogic {
     public static double calculateAbsenteeism(ArrayList<Punch> punchlist, Shift shift) {
         
         double totalMin = 0;
-        Timestamp t1 = new Timestamp(punchlist.get(0).getOriginaltimestamp());
-        LocalDateTime t2 = t1.toLocalDateTime();
-        int d1 = t2.getDayOfMonth();
-        
         ArrayList<ArrayList<Punch>> punches = new ArrayList<ArrayList<Punch>>();
-        ArrayList<Punch> tempList = new ArrayList<Punch>();
-        ArrayList<Punch> list = new ArrayList<Punch>();
+        ArrayList<Punch> tempList1 = new ArrayList<Punch>();
+        ArrayList<Punch> tempList2 = new ArrayList<Punch>();
+        ArrayList<Punch> tempList3 = new ArrayList<Punch>();
+        ArrayList<Punch> tempList4 = new ArrayList<Punch>();
+        ArrayList<Punch> tempList5 = new ArrayList<Punch>();
         
-        for(int i = 0; i<punchlist.size(); ++i) {
-           
-            Timestamp t3 = new Timestamp(punchlist.get(i).getOriginaltimestamp());
-            LocalDateTime t4 = t3.toLocalDateTime();
-            int d2 = t4.getDayOfMonth();
-            System.out.println("d2 = " + d2);
-            System.out.println("d1 = " + d1);
-            if(d1 == d2) {
-                tempList.add(punchlist.get(i));
-            }
-            else {
-                d1++;
-                punches.add(tempList);
-                tempList = new ArrayList<Punch>();
-                System.out.println(tempList);
-                System.out.println(punches);
-            }
-            if( i == (punchlist.size() - 1) && (d1 == d2) ) {
-                punches.add(tempList);
-            }
-       
+        for(Punch p: punchlist) {       
+            Timestamp t = new Timestamp(p.getOriginaltimestamp());
+            LocalDateTime t1 = t.toLocalDateTime();
+            String day = t1.getDayOfWeek().toString();
+            switch(day) {
+                case "MONDAY":
+                    tempList1.add(p);
+                    break;
+                case "TUESDAY":
+                    tempList2.add(p);
+                    break;
+                case "WEDNESDAY":
+                    tempList3.add(p);
+                    break;
+                case "THURSDAY":
+                    tempList4.add(p);
+                    break;
+                case "FRIDAY":
+                    tempList5.add(p);
+                    break;
+            } 
+            
         }
-           
-        //for(ArrayList<Punch> a: punches) {
-            totalMin = calculateTotalMinutes(punchlist, shift);
-        //}
+        punches.add(tempList1);
+        punches.add(tempList2);
+        punches.add(tempList3);
+        punches.add(tempList4);
+        punches.add(tempList5);
+        System.out.println(punches);  
+        for(ArrayList<Punch> a: punches)
+            totalMin += calculateTotalMinutes(a, shift);
         
         double absenteeism = 2400 - totalMin;
         double percentage = (absenteeism/2400 )*100;
