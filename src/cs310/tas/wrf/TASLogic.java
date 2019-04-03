@@ -123,6 +123,7 @@ public class TASLogic {
         ArrayList<Punch> tempList3 = new ArrayList<Punch>();
         ArrayList<Punch> tempList4 = new ArrayList<Punch>();
         ArrayList<Punch> tempList5 = new ArrayList<Punch>();
+        ArrayList<Punch> tempList6 = new ArrayList<Punch>();
         
         for(Punch p: punchlist) {       
             Timestamp t = new Timestamp(p.getOriginaltimestamp());
@@ -144,21 +145,25 @@ public class TASLogic {
                 case "FRIDAY":
                     tempList5.add(p);
                     break;
+                case "SATURDAY":
+                    tempList6.add(p);
+                    break;
             } 
             
         }
+        
         punches.add(tempList1);
         punches.add(tempList2);
         punches.add(tempList3);
         punches.add(tempList4);
         punches.add(tempList5);
-        System.out.println(punches);  
+        punches.add(tempList6);
+        
         for(ArrayList<Punch> a: punches)
             totalMin += calculateTotalMinutes(a, shift);
         
         double absenteeism = 2400 - totalMin;
         double percentage = (absenteeism/2400 )*100;
-        System.out.println("Absenteeism = " + absenteeism);
         return percentage;
         
     }

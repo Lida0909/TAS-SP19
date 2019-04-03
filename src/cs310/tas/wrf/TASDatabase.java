@@ -786,6 +786,7 @@ public class TASDatabase {
         cal.set(Calendar.SECOND, 0);
         
         return cal.getTimeInMillis();
+        
     }
     
     public ArrayList getPayPeriodPunchList(Badge b, long timestamp) {
@@ -797,7 +798,7 @@ public class TASDatabase {
         GregorianCalendar cal2 = new GregorianCalendar();
         cal2.setTimeInMillis(adjust(timestamp));
         int dayofMonth = cal2.get(Calendar.DATE);
-        cal2.set(Calendar.DATE, dayofMonth+6);
+        cal2.set(Calendar.DATE, dayofMonth+7);
         
         try {
         
@@ -967,11 +968,7 @@ public class TASDatabase {
                 
             /* Execute Select Query */
                 
-            System.out.println("Submitting Query ...");
-                
             hasresults = pstSelect.execute();
-            
-            System.out.println("Absenteeism Inserted!");
        
         }
         

@@ -2,6 +2,7 @@
 package cs310.tas.wrf;
 
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Calendar;
@@ -77,16 +78,19 @@ public class Absenteeism {
     
     @Override
     public String toString() {
+        
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTimeInMillis(getPayperiod());
         String payperiod = (new SimpleDateFormat("MM-dd-yyyy")).format(cal.getTime());
-        percentage = Math.round(percentage*100);
+        String pattern = "###.##";
+        DecimalFormat percentage = new DecimalFormat(pattern);
+        String a = String.format("%.2f", getPercentage());
       
         StringBuilder s = new StringBuilder();
         s.append("#").append(getBadgeid()).append(" (Pay Period Starting ").append(payperiod);
-        s.append("): ").append(percentage/100).append("%");
-        
+        s.append("): ").append(a).append("%");
         return s.toString();
+        
     }
      
 }
