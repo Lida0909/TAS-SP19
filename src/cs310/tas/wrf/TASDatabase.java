@@ -757,31 +757,8 @@ public class TASDatabase {
         
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTimeInMillis(timestamp);
-        Timestamp t = new Timestamp(timestamp);
-        LocalDateTime l = t.toLocalDateTime();
-        String day = l.getDayOfWeek().toString();
-        int dayofMonth = cal.get(Calendar.DATE);
-        switch(day) {
-            case "MONDAY":
-                cal.set(Calendar.DATE, dayofMonth-1);
-                break;
-            case "TUESDAY":
-                cal.set(Calendar.DATE, dayofMonth-2);
-                break;
-            case "WEDNESDAY":
-                cal.set(Calendar.DATE, dayofMonth-3);
-                break;
-            case "THURSDAY":
-                cal.set(Calendar.DATE, dayofMonth-4);
-                break;
-            case "FRIDAY":
-                cal.set(Calendar.DATE, dayofMonth-5);
-                break;
-            case "SATURDAY":
-                cal.set(Calendar.DATE, dayofMonth-6);
-                break;
-        } 
-        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         
@@ -862,6 +839,8 @@ public class TASDatabase {
         String badgeID = "";
         long ts = 0;
         double percentage = 0;
+        Absenteeism a = null;
+        //boolean hasData = false;
         
         Timestamp payperiod = new Timestamp(adjust(timestamp));
         String s = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(payperiod);
@@ -886,7 +865,10 @@ public class TASDatabase {
 
                 if ( hasresults ) {
   
-                    resultset = pstSelect.getResultSet();                
+                    resultset = pstSelect.getResultSet();  
+                    
+                    //hasData = resultset.next();
+                    
                     while(resultset.next()) {                 
                         badgeID = resultset.getString(1);
                         Timestamp t = resultset.getTimestamp(2);
@@ -894,6 +876,8 @@ public class TASDatabase {
                         cal.setTimeInMillis(t.getTime());
                         ts = cal.getTimeInMillis();
                         percentage = resultset.getDouble(3);
+                        
+                        a = new Absenteeism(badgeid, ts, percentage);
                     }
                         
                 }
@@ -936,8 +920,7 @@ public class TASDatabase {
             } catch (Exception e) {} }
             
         }
-        
-        Absenteeism a = new Absenteeism(badgeid, ts, percentage);  
+       
         return a;
         
     }
@@ -950,6 +933,8 @@ public class TASDatabase {
         
         Timestamp payperiod = new Timestamp(ts);
         String s = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(payperiod);
+        String pay = (new SimpleDateFormat("MM-dd-yyyy")).format(adjust(ts));
+        String st = "#" + badgeID + " (Pay Period Starting " + pay + "): " + percentage;
         
         try {
             

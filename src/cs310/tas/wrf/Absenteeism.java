@@ -18,31 +18,8 @@ public class Absenteeism {
         
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTimeInMillis(payperiod);
-        Timestamp t = new Timestamp(payperiod);
-        LocalDateTime l = t.toLocalDateTime();
-        String day = l.getDayOfWeek().toString();
-        int dayofMonth = cal.get(Calendar.DATE);
-        switch(day) {
-            case "MONDAY":
-                cal.set(Calendar.DATE, dayofMonth-1);
-                break;
-            case "TUESDAY":
-                cal.set(Calendar.DATE, dayofMonth-2);
-                break;
-            case "WEDNESDAY":
-                cal.set(Calendar.DATE, dayofMonth-3);
-                break;
-            case "THURSDAY":
-                cal.set(Calendar.DATE, dayofMonth-4);
-                break;
-            case "FRIDAY":
-                cal.set(Calendar.DATE, dayofMonth-5);
-                break;
-            case "SATURDAY":
-                cal.set(Calendar.DATE, dayofMonth-6);
-                break;
-        } 
-        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         
