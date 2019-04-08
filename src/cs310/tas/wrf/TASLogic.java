@@ -83,6 +83,7 @@ public class TASLogic {
         if (totalMin > shift.getlunchDeduct() && punchCounter <= 3) {
             
             totalMin -= lunchTime;
+
             
         }
         
@@ -96,7 +97,7 @@ public class TASLogic {
      * @return 
      */
     public static String getPunchListAsJSON(ArrayList<Punch> dailyPunchList){
-        
+
         ArrayList<HashMap<String, String>> jsonData = new ArrayList<>();
         for(Punch p : dailyPunchList){
             HashMap<String, String> punchData = new HashMap<>();
@@ -114,6 +115,7 @@ public class TASLogic {
         return JSONValue.toJSONString(jsonData);
     }
     
+
     public static double calculateAbsenteeism(ArrayList<Punch> punchlist, Shift shift) {
         
         double totalMin = 0;
@@ -168,4 +170,5 @@ public class TASLogic {
         
     }
     
+
 }
