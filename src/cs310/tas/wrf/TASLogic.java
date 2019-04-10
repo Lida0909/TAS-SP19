@@ -170,5 +170,81 @@ public class TASLogic {
         
     }
     
+    
+    public static String getPunchListPlusTotalsAsJSON(ArrayList<Punch> punchlist, Shift s) {
+        
+        ArrayList<HashMap<String, String>> jsonData = new ArrayList<>();
+        double absenteeism = calculateAbsenteeism(punchlist, s);
+        String a = String.format("%.2f", absenteeism);
+        a = a+ "%";
+        
+        int totalMin = 0;
+        ArrayList<ArrayList<Punch>> punches = new ArrayList<ArrayList<Punch>>();
+        ArrayList<Punch> tempList1 = new ArrayList<Punch>();
+        ArrayList<Punch> tempList2 = new ArrayList<Punch>();
+        ArrayList<Punch> tempList3 = new ArrayList<Punch>();
+        ArrayList<Punch> tempList4 = new ArrayList<Punch>();
+        ArrayList<Punch> tempList5 = new ArrayList<Punch>();
+        ArrayList<Punch> tempList6 = new ArrayList<Punch>();
+        
+        for(Punch p: punchlist) {       
+            Timestamp t = new Timestamp(p.getOriginaltimestamp());
+            LocalDateTime t1 = t.toLocalDateTime();
+            String day = t1.getDayOfWeek().toString();
+            switch(day) {
+                case "MONDAY":
+                    tempList1.add(p);
+                    break;
+                case "TUESDAY":
+                    tempList2.add(p);
+                    break;
+                case "WEDNESDAY":
+                    tempList3.add(p);
+                    break;
+                case "THURSDAY":
+                    tempList4.add(p);
+                    break;
+                case "FRIDAY":
+                    tempList5.add(p);
+                    break;
+                case "SATURDAY":
+                    tempList6.add(p);
+                    break;
+            } 
+            
+        }
+        
+        punches.add(tempList1);
+        punches.add(tempList2);
+        punches.add(tempList3);
+        punches.add(tempList4);
+        punches.add(tempList5);
+        punches.add(tempList6);
+        
+        for(ArrayList<Punch> p: punches)
+            totalMin += calculateTotalMinutes(p, s);
+   
+        for(Punch p : punchlist){
+            HashMap<String, String> punchData = new HashMap<>();
+            punchData.put("terminalid", String.valueOf(p.getTerminalid()));
+            punchData.put("badgeid", p.getBadgeid());
+            punchData.put("id", String.valueOf(p.getId()));
+            punchData.put("punchtypeid", String.valueOf(p.getPunchtypeid()));
+            punchData.put("punchdata", p.getAdjustMessage());
+            punchData.put("originaltimestamp", Long.toString(p.getOriginaltimestamp()));
+            punchData.put("adjustedtimestamp", Long.toString(p.getAdjustedTimeStamp().getTime()));
+            
+            jsonData.add(punchData);
+            
+        }
+        HashMap<String, String> data = new HashMap<>();
+        data.put("absenteeism", a);
+        data.put("totalminutes", String.valueOf(totalMin));
+        jsonData.add(data);
+        
+        return JSONValue.toJSONString(jsonData);
+        
+    }
+    
 
 }

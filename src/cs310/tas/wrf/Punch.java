@@ -564,10 +564,11 @@ public class Punch {
                 break;
                 
                 
-            case 2:
+            /*case 2:
                 adjustMessage = "Time Out";
                 adjustedTimeStamp = helperMethod2(punchTimeStamp, shiftStop);
                 break;
+            */
                 
             default:
                 System.out.println("ERROR");
