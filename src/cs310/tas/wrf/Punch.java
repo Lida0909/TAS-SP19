@@ -274,12 +274,12 @@ public class Punch {
         LocalTime punchTime = punchTimeStamp.toLocalTime();
         int punchTimeSeconds =  punchTime.getSecond();
         int totalpunchTimeMinutes = punchTime.getMinute() + (punchTime.getHour()*60);
-        int totalshiftStopMinutes = shiftStop.getMinute() + (punchTime.getHour()*60);
+        int totalshiftStopMinutes = shiftStop.getMinute() + (shiftStop.getHour()*60);
         int totalshiftStartMinutes = shiftStart.getMinute() + (shiftStart.getHour()*60);
-        boolean weekend =  (punchTimeStamp.getDayOfWeek().toString().equals("SATURDAY") || 
+        boolean weekend = (punchTimeStamp.getDayOfWeek().toString().equals("SATURDAY") || 
                 punchTimeStamp.getDayOfWeek().toString().equals("SUNDAY") );
         
-        adjustedTimeStamp = Timestamp.valueOf(punchTimeStamp);
+        adjustedTimeStamp = Timestamp.valueOf(punchTimeStamp.withSecond(0));
         
         switch(this.punchTypeID){
             
@@ -405,7 +405,7 @@ public class Punch {
                         if(timeInterval <= interval) {
                             
                             if( (remainder == 0) && punchTime.getSecond() < 60) {
-                                adjustMessage = "None";
+                                adjustMessage = "Shift Stop";
                             }
                             else {
                                 adjustMessage = "Shift Stop";
@@ -414,9 +414,18 @@ public class Punch {
                             adjustedTimeStamp = helperMethod1(punchTimeStamp, totalshiftStopMinutes);
                         }
                         else {
-                            adjustMessage = "Interval Round";
-                            totalpunchTimeMinutes = totalpunchTimeMinutes - ((quotient+1)*interval);
-                            adjustedTimeStamp = helperMethod1(punchTimeStamp, totalpunchTimeMinutes);
+                            if(remainder == 0 && punchTime.getSecond() < 60) {
+                                adjustMessage = "None";
+                            }
+                            else {
+                                adjustMessage = "Interval Round";
+                                if(remainder <= 7)
+                                    totalpunchTimeMinutes = totalpunchTimeMinutes - remainder;
+                                else
+                                    totalpunchTimeMinutes = totalpunchTimeMinutes + (interval-remainder);
+                                adjustedTimeStamp = helperMethod1(punchTimeStamp, totalpunchTimeMinutes);
+                            }
+                            
                         }
                         
                     }
@@ -456,12 +465,16 @@ public class Punch {
                             adjustedTimeStamp = helperMethod2(punchTimeStamp, shiftStart);
                         }
                         else {
-                            adjustMessage = "Interval Round";
-                            if(remainder <= 7) {
+                           if(remainder == 0 && punchTime.getSecond() < 60) {
+                                adjustMessage = "None";
+                            }
+                           else if(remainder <= 7) {
+                                adjustMessage = "Interval Round";
                                 totalpunchTimeMinutes = totalshiftStartMinutes - ((quotient)*interval);
                                 adjustedTimeStamp = helperMethod1(punchTimeStamp, totalpunchTimeMinutes);
                             }
                             else {
+                                adjustMessage = "Interval Round";
                                 totalpunchTimeMinutes = totalshiftStartMinutes - ((quotient+1)*interval);
                                 adjustedTimeStamp = helperMethod1(punchTimeStamp, totalpunchTimeMinutes);
                             }
@@ -562,16 +575,9 @@ public class Punch {
                 }
 
                 break;
-                
-                
-            /*case 2:
-                adjustMessage = "Time Out";
-                adjustedTimeStamp = helperMethod2(punchTimeStamp, shiftStop);
-                break;
-            */
-                
+            
             default:
-                System.out.println("ERROR");
+                break;
                                
         }
         

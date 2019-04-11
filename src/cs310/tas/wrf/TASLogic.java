@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import org.json.simple.*;
 
@@ -167,7 +168,7 @@ public class TASLogic {
         totalMin = 2400 - totalMin;
      
         for(Punch p : punchlist){
-            
+           
             HashMap<String, String> punchData = new HashMap<>();
             punchData.put("terminalid", String.valueOf(p.getTerminalid()));
             punchData.put("badgeid", p.getBadgeid());
@@ -189,5 +190,4 @@ public class TASLogic {
         
     }
     
-
 }
