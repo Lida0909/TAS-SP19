@@ -41,52 +41,36 @@ public class TASLogic {
         long inTime = 0;
         long outTime = 0;
         int punchCounter = 0;
-
-        int lunchTime = 30;
-
-        
+        int lunchTime = shift.totalLunchTime();
+    
         for(int i = 0; i < dailypunchlist.size(); i++) {
             
-           if (dailypunchlist.get(i).getPunchtypeid() == CLOCKIN) {
-               
+           if (dailypunchlist.get(i).getPunchtypeid() == CLOCKIN) {           
                inTime = dailypunchlist.get(i).getAdjustedTimeStamp().getTime();
                punchCounter++;
-               continue;
-               
+               continue;        
            }
 
            if (dailypunchlist.get(i).getPunchtypeid() == CLOCKOUT) {
-               
                outTime = dailypunchlist.get(i).getAdjustedTimeStamp().getTime();
-               punchCounter++;
-               
+               punchCounter++;          
            }
            
-           if (inTime != 0 && outTime != 0) {
-               
-               totalMillis += outTime - inTime;
-               
-           }
-           
-           
+           if (inTime != 0 && outTime != 0) {         
+               totalMillis += outTime - inTime;              
+           }                
            inTime = 0;
            outTime = 0;
            
         }
         
-        if (totalMillis != 0) {
-            
-            totalMin = (int) (totalMillis/60000);
-            
+        if (totalMillis != 0) {           
+            totalMin = (int) (totalMillis/60000);         
         }
         
-        if (totalMin > shift.getlunchDeduct() && punchCounter <= 3) {
-            
-            totalMin -= lunchTime;
-
-            
+        if (totalMin > shift.getlunchDeduct() && punchCounter <= 3) {       
+            totalMin -= lunchTime;           
         }
-        
         return totalMin;
         
     }    
@@ -179,52 +163,11 @@ public class TASLogic {
         a = a+ "%";
         
         int totalMin = 0;
-        ArrayList<ArrayList<Punch>> punches = new ArrayList<ArrayList<Punch>>();
-        ArrayList<Punch> tempList1 = new ArrayList<Punch>();
-        ArrayList<Punch> tempList2 = new ArrayList<Punch>();
-        ArrayList<Punch> tempList3 = new ArrayList<Punch>();
-        ArrayList<Punch> tempList4 = new ArrayList<Punch>();
-        ArrayList<Punch> tempList5 = new ArrayList<Punch>();
-        ArrayList<Punch> tempList6 = new ArrayList<Punch>();
-        
-        for(Punch p: punchlist) {       
-            Timestamp t = new Timestamp(p.getOriginaltimestamp());
-            LocalDateTime t1 = t.toLocalDateTime();
-            String day = t1.getDayOfWeek().toString();
-            switch(day) {
-                case "MONDAY":
-                    tempList1.add(p);
-                    break;
-                case "TUESDAY":
-                    tempList2.add(p);
-                    break;
-                case "WEDNESDAY":
-                    tempList3.add(p);
-                    break;
-                case "THURSDAY":
-                    tempList4.add(p);
-                    break;
-                case "FRIDAY":
-                    tempList5.add(p);
-                    break;
-                case "SATURDAY":
-                    tempList6.add(p);
-                    break;
-            } 
-            
-        }
-        
-        punches.add(tempList1);
-        punches.add(tempList2);
-        punches.add(tempList3);
-        punches.add(tempList4);
-        punches.add(tempList5);
-        punches.add(tempList6);
-        
-        for(ArrayList<Punch> p: punches)
-            totalMin += calculateTotalMinutes(p, s);
-   
+        totalMin = (int) ((absenteeism/100)*2400);
+        totalMin = 2400 - totalMin;
+     
         for(Punch p : punchlist){
+            
             HashMap<String, String> punchData = new HashMap<>();
             punchData.put("terminalid", String.valueOf(p.getTerminalid()));
             punchData.put("badgeid", p.getBadgeid());
