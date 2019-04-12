@@ -78,8 +78,8 @@ public class TASLogic {
     
     /**
      * 
-     * @param dailyPunchList
-     * @return 
+     * @param dailyPunchList an ArrayList of Punch objects for a shift
+     * @return the daily punch list as a a String in JSON format
      */
     public static String getPunchListAsJSON(ArrayList<Punch> dailyPunchList){
 
@@ -100,7 +100,13 @@ public class TASLogic {
         return JSONValue.toJSONString(jsonData);
     }
     
-
+    /**
+     * 
+     * @param punchlist an ArrayList of Punch objects for a shift
+     * @param shift a Shift object containing the shift rules
+     * @return the calculated absenteeism of a shift as a double by looking at
+     * the punch list of a shift
+     */
     public static double calculateAbsenteeism(ArrayList<Punch> punchlist, Shift shift) {
         
         double totalMin = 0;
@@ -155,7 +161,13 @@ public class TASLogic {
         
     }
     
-    
+    /**
+     * 
+     * @param punchlist an ArrayList of Punch objects for a shift
+     * @param s a Shift object containing the shift rules
+     * @return the daily punch list with an absenteeism percentage as a a String
+     * in JSON format
+     */
     public static String getPunchListPlusTotalsAsJSON(ArrayList<Punch> punchlist, Shift s) {
         
         ArrayList<HashMap<String, String>> jsonData = new ArrayList<>();

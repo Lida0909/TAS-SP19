@@ -168,6 +168,10 @@ public class Punch {
 
     }
     
+    /**
+     * 
+     * @return the adjust message as a String
+     */
     public String getAdjustMessage(){
         return adjustMessage;
 
@@ -234,7 +238,6 @@ public class Punch {
         this.originalTimeStamp = originalTimeStamp;
     }
     
-
     private Timestamp helperMethod1(LocalDateTime punch, int totalminutes) {
         punch = punch.withHour(totalminutes/60);
         punch = punch.withMinute(totalminutes%60);
