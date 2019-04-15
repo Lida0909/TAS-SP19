@@ -21,7 +21,8 @@ public class Absenteeism {
     private double percentage;
     
     /**
-     * 
+     * Sets the badge id, pay period, and absenteeism percentage of a Specific
+     * employee
      * @param badgeid a String that represents the id of a specific badge
      * @param payperiod a long that represents the pay period for an employee
      * @param percentage a double that represents the absenteeism percentage of
@@ -43,7 +44,7 @@ public class Absenteeism {
     }
 
     /**
-     * 
+     * Fetches a badge id for a specific employee
      * @return the Badgeid of an employee as a String
      */
     public String getBadgeid() {
@@ -51,7 +52,7 @@ public class Absenteeism {
     }
 
     /**
-     * 
+     * Sets a specific badge id for a specific employee
      * @param badgeid a String that represents the id of a specific badge
      */
     public void setBadgeid(String badgeid) {
@@ -59,7 +60,7 @@ public class Absenteeism {
     }
 
     /**
-     * 
+     * Fetches the pay period fro an employee
      * @return the pay period for an employee as a long
      */
     public long getPayperiod() {
@@ -67,7 +68,7 @@ public class Absenteeism {
     }
 
     /**
-     * 
+     * Sets a specific pay period for a specific employee
      * @param payperiod a long that represents the pay period of an employee
      */
     public void setPayperiod(long payperiod) {
@@ -75,7 +76,7 @@ public class Absenteeism {
     }
 
     /**
-     * 
+     * Fetches the absenteeism percentage for a specific employee's pay period
      * @return the absenteeism percentage as a double
      */
     public double getPercentage() {
@@ -83,7 +84,7 @@ public class Absenteeism {
     }
 
     /**
-     * 
+     * Sets the absenteeism percentage for a specific employee's pay period
      * @param percentage a double that represents the absenteeism percentage of 
      * a pay period for an employee
      */
