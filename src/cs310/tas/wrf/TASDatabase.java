@@ -294,6 +294,7 @@ public class TASDatabase {
      */
     public Shift getShift(int shiftID) {
         
+        int id = 0;
         String description = null; 
         String[] startingTime = null;
         String[] stoppingTime = null;
@@ -307,12 +308,9 @@ public class TASDatabase {
         
         try {
         
-            /* Prepare Select Query */
-                
+            /* Prepare Select Query */           
 
-            query = "SELECT description,start,stop,`interval`,graceperiod,dock,"
-                    + "lunchstart,lunchstop,lunchdeduct FROM tas.shift WHERE id"
-                    + " = "+ shiftID;
+            query = "SELECT * FROM dailyschedule where id = '" + shiftID + "'";
 
             pstSelect = conn.prepareStatement(query);
                 
@@ -339,13 +337,11 @@ public class TASDatabase {
                     
                     while(resultset.next()) {
                         
-                       description = resultset.getString(1);
+                       //description = resultset.getString(1);
                        startingTime = resultset.getTime(2).toString().split(":");
                        stoppingTime = resultset.getTime(3).toString().split(":");
                        interval = resultset.getInt(4);
-
                        gracePeriod = resultset.getInt(5);  
-
                        dock = resultset.getInt(6);
                        lunchStart = resultset.getTime(7).toString().split(":");
                        lunchStop = resultset.getTime(8).toString().split(":");
@@ -402,12 +398,58 @@ public class TASDatabase {
         int lunchStartMinute = Integer.parseInt(lunchStart[1]);
         int lunchStopHour = Integer.parseInt(lunchStop[0]);
         int lunchStopMinute = Integer.parseInt(lunchStop[1]);
+       
+        DailySchedule dailyschedule = new DailySchedule(shiftStartHour, shiftStartMinute,
+                shiftStopHour, shiftStopMinute,interval, gracePeriod, dock, lunchStartHour, 
+                lunchStartMinute, lunchStopHour,lunchStopMinute, lunchDeduct);
         
-        Shift s = new Shift(description, shiftStartHour, shiftStartMinute, 
-                interval, gracePeriod, dock, shiftStopHour, shiftStopMinute,
-                lunchStartHour, lunchStartMinute, lunchStopHour,
-                lunchStopMinute, lunchDeduct);
+        try {
         
+            /* Prepare Select Query */
+            
+            query = "SELECT * FROM shift WHERE id = '" + shiftID + "'";
+            pstSelect = conn.prepareStatement(query);
+                
+            /* Execute Select Query */
+
+            hasresults = pstSelect.execute();                
+            resultset = pstSelect.getResultSet();
+            metadata = resultset.getMetaData();
+            columnCount = metadata.getColumnCount(); 
+
+            /* Get ResultSet */
+
+            resultset = pstSelect.getResultSet();                    
+
+            while(resultset.next()) {
+                id = resultset.getInt(1);
+                description = resultset.getString(2);
+            }
+        }        
+        
+        catch (Exception e) {
+            
+            System.err.println(e.toString());
+            
+        }
+        
+        /* Close Other Database Objects */
+        
+        finally {
+            
+            if (resultset != null) { try { resultset.close(); resultset = null; 
+            } catch (Exception e) {} }
+            
+            if (pstSelect != null) { try { pstSelect.close(); pstSelect = null; 
+            } catch (Exception e) {} }
+            
+            if (pstUpdate != null) { try { pstUpdate.close(); pstUpdate = null; 
+            } catch (Exception e) {} }
+            
+        }
+        
+        Shift s = new Shift(description, id, dailyschedule);
+        System.out.println(s.toString());
         return s;
         
     }

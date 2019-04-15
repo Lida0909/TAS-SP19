@@ -11,8 +11,10 @@ import java.time.LocalTime;
 
 public class Shift {
     
+    private DailySchedule defaultschedule;
     private String description; 
-    private LocalTime startingTime;
+    private int id;
+    /*private LocalTime startingTime;
     private LocalTime stoppingTime;
     private LocalTime lunchStart;
     private LocalTime lunchStop;
@@ -21,6 +23,7 @@ public class Shift {
     private int interval;
     private int gracePeriod;
     private int dock;
+    */
     
     /**
      * 
@@ -40,22 +43,24 @@ public class Shift {
      * @param lunchDeduct an int that represents the number of minutes you have
      * to work during a day
      */
-    public Shift(String description, int startHour, int startMin,int interval, int gracePeriod,
-            int dock, int stopHour, int stopMin, int lunchStartHour, int lunchStartMin,
-            int lunchStopHour, int lunchStopMin, int lunchDeduct) {
+    public Shift(String description, int id, DailySchedule defaultschedule) {
         
         this.description = description;
-        this.startingTime = LocalTime.of(startHour, startMin);
+        this.id = id;
+        this.defaultschedule = defaultschedule;
+        /*this.startingTime = LocalTime.of(startHour, startMin);
         this.stoppingTime = LocalTime.of(stopHour, stopMin);
         this.lunchStart = LocalTime.of(lunchStartHour, lunchStartMin);
         this.lunchStop = LocalTime.of(lunchStopHour, lunchStopMin);
         this.lunchDeduct = lunchDeduct;
         this.interval = interval;
         this.gracePeriod = gracePeriod;
-        this.dock = dock;
+        this.dock = dock;*/
         
     }
-    
+    //int startHour, int startMin,int interval, int gracePeriod,
+            //int dock, int stopHour, int stopMin, int lunchStartHour, int lunchStartMin,
+            //int lunchStopHour, int lunchStopMin, int lunchDeduct
     
     /* Getter Methods */
     
@@ -64,7 +69,7 @@ public class Shift {
      * @return the Starting time or the shift as a LocalTime object
      */
     public LocalTime getStartingTime() {
-        return startingTime;
+        return defaultschedule.getShiftStart();
     }
     
     /**
@@ -88,7 +93,7 @@ public class Shift {
      * @return the stopping time of the shift as a LocalTime
      */
     public LocalTime getStoppingTime() {
-        return stoppingTime;
+        return defaultschedule.getShiftStop();
     }
     
     /**
@@ -112,7 +117,7 @@ public class Shift {
      * @return the start of lunch as a LocalTime
      */
     public LocalTime getLunchStart() {
-        return lunchStart;
+        return defaultschedule.getLunchStart();
     }
     
     /**
@@ -120,7 +125,7 @@ public class Shift {
      * @return the stopping time of lunch as a LocalTime
      */
     public LocalTime getLunchStop() {
-        return lunchStop;
+        return defaultschedule.getLunchStop();
     }
     
     /**
@@ -131,7 +136,7 @@ public class Shift {
      */
 
     public int getInterval() {
-        return interval;
+        return defaultschedule.getInterval();
     }
     
     /**
@@ -139,7 +144,7 @@ public class Shift {
      * @return the deduct time for lunch break as an int
      */
     public int getlunchDeduct() {
-        return lunchDeduct;
+        return defaultschedule.getLunchDeductionThreshold();
     }
     
 
@@ -150,7 +155,7 @@ public class Shift {
      */
 
     public int getGracePeriod() {
-        return gracePeriod;
+        return defaultschedule.getGraceperiod();
     }
     
 
@@ -161,7 +166,7 @@ public class Shift {
      */
 
     public int getDock() {
-        return dock;
+        return defaultschedule.getDockpenalty();
     }
     
     
@@ -172,7 +177,7 @@ public class Shift {
      * @param startingTime a LocalTime that represents the start time of a shift
      */
     public void setStartingTime(LocalTime startingTime) {
-        this.startingTime = startingTime;
+        this.defaultschedule.setShiftStart(startingTime);
     }
 
     /**
@@ -180,7 +185,7 @@ public class Shift {
      * @param stoppingTime a LocalTime that represents the stop time of a shift
      */
     public void setStoppingTime(LocalTime stoppingTime) {
-        this.stoppingTime = stoppingTime;
+        this.defaultschedule.setShiftStop(stoppingTime);
     }
 
     /**
@@ -189,7 +194,7 @@ public class Shift {
      * shift
      */
     public void setLunchStart(LocalTime lunchStart) {
-        this.lunchStart = lunchStart;
+        this.defaultschedule.setLunchStart(lunchStart);
     }
 
     /**
@@ -198,7 +203,7 @@ public class Shift {
      * shift
      */
     public void setLunchStop(LocalTime lunchStop) {
-        this.lunchStop = lunchStop;
+        this.defaultschedule.setLunchStart(lunchStop);
     }
 
     /**
@@ -207,7 +212,7 @@ public class Shift {
      * a shift
      */
     public void setLunchDeduct(int lunchDeduct) {
-        this.lunchDeduct = lunchDeduct;
+        this.defaultschedule.setLunchDeductionThreshold(lunchDeduct);
     }
 
 
@@ -217,7 +222,7 @@ public class Shift {
      */
 
     public void setInterval(int interval) {
-        this.interval = interval;
+        this.defaultschedule.setInterval(interval);
     }
 
 
@@ -227,7 +232,7 @@ public class Shift {
      */
 
     public void setGracePeriod(int gracePeriod) {
-        this.gracePeriod = gracePeriod;
+        this.defaultschedule.setGraceperiod(gracePeriod);
     }
 
 
@@ -237,7 +242,7 @@ public class Shift {
      */
 
     public void setDock(int dock) {
-        this.dock = dock;
+        this.defaultschedule.setDockpenalty(dock);
     }
     
     /**
@@ -268,9 +273,9 @@ public class Shift {
     public String toString() {
         
        StringBuilder s = new StringBuilder();
-       s.append(description).append(": ").append(startingTime.toString()).append(" - ");
-       s.append(stoppingTime.toString()).append(" (").append(totalShiftHours()).append(" minutes); Lunch: ");
-       s.append(lunchStart.toString()).append(" - ").append(lunchStop.toString()).append(" (");
+       s.append(description).append(": ").append(getStartingTime().toString()).append(" - ");
+       s.append(getStoppingTime().toString()).append(" (").append(totalShiftHours()).append(" minutes); Lunch: ");
+       s.append(getLunchStart().toString()).append(" - ").append(getLunchStop().toString()).append(" (");
        s.append(totalLunchTime()).append(" minutes)");
        
        return s.toString();
