@@ -8,12 +8,25 @@ import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+/**
+ * The Absenteeism class is an abstraction of absenteeism percentage of an
+ * employee for a pay period. This class is used to calculate the absenteeism of
+ * an employee.
+ * @author War Room F
+ */
 public class Absenteeism {
     
     private String badgeid;
     private long payperiod;
     private double percentage;
     
+    /**
+     * 
+     * @param badgeid a String that represents the id of a specific badge
+     * @param payperiod a long that represents the pay period for an employee
+     * @param percentage a double that represents the absenteeism percentage of
+     * a pay period for an employee
+     */
     public Absenteeism(String badgeid, long payperiod, double percentage) {
         
         GregorianCalendar cal = new GregorianCalendar();
@@ -29,26 +42,51 @@ public class Absenteeism {
         
     }
 
+    /**
+     * 
+     * @return the Badgeid of an employee as a String
+     */
     public String getBadgeid() {
         return badgeid;
     }
 
+    /**
+     * 
+     * @param badgeid a String that represents the id of a specific badge
+     */
     public void setBadgeid(String badgeid) {
         this.badgeid = badgeid;
     }
 
+    /**
+     * 
+     * @return the pay period for an employee as a long
+     */
     public long getPayperiod() {
         return payperiod;
     }
 
+    /**
+     * 
+     * @param payperiod a long that represents the pay period of an employee
+     */
     public void setPayperiod(long payperiod) {
         this.payperiod = payperiod;
     }
 
+    /**
+     * 
+     * @return the absenteeism percentage as a double
+     */
     public double getPercentage() {
         return percentage;
     }
 
+    /**
+     * 
+     * @param percentage a double that represents the absenteeism percentage of 
+     * a pay period for an employee
+     */
     public void setPercentage(double percentage) {
         this.percentage = percentage;
     }
