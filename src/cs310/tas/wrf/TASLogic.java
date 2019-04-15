@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import org.json.simple.*;
 
@@ -41,60 +42,44 @@ public class TASLogic {
         long inTime = 0;
         long outTime = 0;
         int punchCounter = 0;
-
-        int lunchTime = 30;
-
-        
+        int lunchTime = shift.totalLunchTime();
+    
         for(int i = 0; i < dailypunchlist.size(); i++) {
             
-           if (dailypunchlist.get(i).getPunchtypeid() == CLOCKIN) {
-               
+           if (dailypunchlist.get(i).getPunchtypeid() == CLOCKIN) {           
                inTime = dailypunchlist.get(i).getAdjustedTimeStamp().getTime();
                punchCounter++;
-               continue;
-               
+               continue;        
            }
 
            if (dailypunchlist.get(i).getPunchtypeid() == CLOCKOUT) {
-               
                outTime = dailypunchlist.get(i).getAdjustedTimeStamp().getTime();
-               punchCounter++;
-               
+               punchCounter++;          
            }
            
-           if (inTime != 0 && outTime != 0) {
-               
-               totalMillis += outTime - inTime;
-               
-           }
-           
-           
+           if (inTime != 0 && outTime != 0) {         
+               totalMillis += outTime - inTime;              
+           }                
            inTime = 0;
            outTime = 0;
            
         }
         
-        if (totalMillis != 0) {
-            
-            totalMin = (int) (totalMillis/60000);
-            
+        if (totalMillis != 0) {           
+            totalMin = (int) (totalMillis/60000);         
         }
         
-        if (totalMin > shift.getlunchDeduct() && punchCounter <= 3) {
-            
-            totalMin -= lunchTime;
-
-            
+        if (totalMin > shift.getlunchDeduct() && punchCounter <= 3) {       
+            totalMin -= lunchTime;           
         }
-        
         return totalMin;
         
     }    
     
     /**
      * 
-     * @param dailyPunchList
-     * @return 
+     * @param dailyPunchList an ArrayList of Punch objects for a shift
+     * @return the daily punch list as a a String in JSON format
      */
     public static String getPunchListAsJSON(ArrayList<Punch> dailyPunchList){
 
@@ -115,7 +100,13 @@ public class TASLogic {
         return JSONValue.toJSONString(jsonData);
     }
     
-
+    /**
+     * 
+     * @param punchlist an ArrayList of Punch objects for a shift
+     * @param shift a Shift object containing the shift rules
+     * @return the calculated absenteeism of a shift as a double by looking at
+     * the punch list of a shift
+     */
     public static double calculateAbsenteeism(ArrayList<Punch> punchlist, Shift shift) {
         
         double totalMin = 0;
@@ -170,5 +161,45 @@ public class TASLogic {
         
     }
     
-
+    /**
+     * 
+     * @param punchlist an ArrayList of Punch objects for a shift
+     * @param s a Shift object containing the shift rules
+     * @return the daily punch list with an absenteeism percentage as a a String
+     * in JSON format
+     */
+    public static String getPunchListPlusTotalsAsJSON(ArrayList<Punch> punchlist, Shift s) {
+        
+        ArrayList<HashMap<String, String>> jsonData = new ArrayList<>();
+        double absenteeism = calculateAbsenteeism(punchlist, s);
+        String a = String.format("%.2f", absenteeism);
+        a = a+ "%";
+        
+        int totalMin = 0;
+        totalMin = (int) ((absenteeism/100)*2400);
+        totalMin = 2400 - totalMin;
+     
+        for(Punch p : punchlist){
+           
+            HashMap<String, String> punchData = new HashMap<>();
+            punchData.put("terminalid", String.valueOf(p.getTerminalid()));
+            punchData.put("badgeid", p.getBadgeid());
+            punchData.put("id", String.valueOf(p.getId()));
+            punchData.put("punchtypeid", String.valueOf(p.getPunchtypeid()));
+            punchData.put("punchdata", p.getAdjustMessage());
+            punchData.put("originaltimestamp", Long.toString(p.getOriginaltimestamp()));
+            punchData.put("adjustedtimestamp", Long.toString(p.getAdjustedTimeStamp().getTime()));
+            
+            jsonData.add(punchData);
+            
+        }
+        HashMap<String, String> data = new HashMap<>();
+        data.put("absenteeism", a);
+        data.put("totalminutes", String.valueOf(totalMin));
+        jsonData.add(data);
+        
+        return JSONValue.toJSONString(jsonData);
+        
+    }
+    
 }

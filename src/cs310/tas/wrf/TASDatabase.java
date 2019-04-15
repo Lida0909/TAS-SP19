@@ -795,6 +795,12 @@ public class TASDatabase {
         
     }
     
+    /**
+     * 
+     * @param timestamp a long that represents the amount of milliseconds of a 
+     * timestamp 
+     * @return a long that returns the adjusted timestamp in milliseconds
+     */
      private long adjust(long timestamp) {
         
         GregorianCalendar cal = new GregorianCalendar();
@@ -808,6 +814,14 @@ public class TASDatabase {
         
     }
     
+     /**
+      * Retrieves a list of Punches from a single pay period from the database.
+      * @param b a Badge object that represents an employee's badge
+      * @param timestamp a long that represents the amount of milliseconds from
+      * a timestamp 
+      * @return an ArrayList object that contains all of the punches from the
+      * pay period represented in the timestamp parameter
+      */
     public ArrayList getPayPeriodPunchList(Badge b, long timestamp) {
         
         ArrayList<Punch> list = new ArrayList<Punch>();
@@ -876,6 +890,14 @@ public class TASDatabase {
         
     }
     
+    /**
+     * 
+     * @param badgeid a String object that represents the employee's badge id
+     * @param timestamp a long that represents the amount of milliseconds from
+     * a timestamp 
+     * @return an Absenteeism object representing the absentee percentage of an 
+     * individual employee
+     */
     public Absenteeism getAbsenteeism(String badgeid, long timestamp) {
         
         String badgeID = "";
@@ -967,6 +989,11 @@ public class TASDatabase {
         
     }
     
+    /**
+     * inserts the absenteeism of an employee into the database
+     * @param a an Absenteeism object that represents the percentage an employee
+     * is absent
+     */
     public void insertAbsenteeism(Absenteeism a) {
         
         String badgeID = a.getBadgeid();
