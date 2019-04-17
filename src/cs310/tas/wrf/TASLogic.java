@@ -77,7 +77,7 @@ public class TASLogic {
     }    
     
     /**
-     * 
+     * Fetches the daily punch list as a String in the JSON format
      * @param dailyPunchList an ArrayList of Punch objects for a shift
      * @return the daily punch list as a a String in JSON format
      */
@@ -101,7 +101,7 @@ public class TASLogic {
     }
     
     /**
-     * 
+     * Calculates total absenteeism of an employee in a specific shift
      * @param punchlist an ArrayList of Punch objects for a shift
      * @param shift a Shift object containing the shift rules
      * @return the calculated absenteeism of a shift as a double by looking at
@@ -162,7 +162,8 @@ public class TASLogic {
     }
     
     /**
-     * 
+     * Fetches the punch list and total minutes of a shift as a Sting in the
+     * JSON format
      * @param punchlist an ArrayList of Punch objects for a shift
      * @param s a Shift object containing the shift rules
      * @return the daily punch list with an absenteeism percentage as a a String

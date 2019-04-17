@@ -23,7 +23,8 @@ public class Punch {
     private String adjustMessage;
     
     /**
-     *
+     * Sets the id, terminalID, badgeID, originalTimeStamp, and punhcTypeID of a
+     * specific punch
      * @param id an int that represents the id of a punch
      * @param terminalID an int that represents which terminal a punch was made
      * @param badgeID a String that represents the id of a specific badge
@@ -43,7 +44,9 @@ public class Punch {
     }
 
     /**
-     *
+     * Creates a new punch with the current time and punch type id and an 
+     * employee's specific badgeID with the terminalID from the specific
+     * terminal
      * @param b a Badge that represents a specific employee's badge id and name
      * @param terminalID an int that represents which terminal a punch was made
      * @param punchTypeID an int that represents whether someone clocked in or 
@@ -54,7 +57,7 @@ public class Punch {
     }
     
     /**
-     *
+     * Fetches the original timestamp as a String
      * @return the original timestamp of a punch as a string
      */
     public String printOriginalTimestamp() {
@@ -94,7 +97,7 @@ public class Punch {
     }
     
     /**
-     *
+     * Fetches the adjusted timestamp as a String
      * @return the adjusted timestamp of a punch as a string
      */
     public String printAdjustedTimestamp() {
@@ -127,7 +130,7 @@ public class Punch {
     // Getter Methods
     
     /**
-     *
+     * Fetches the badge id as a String
      * @return the badge id as a string
      */
         
@@ -136,7 +139,7 @@ public class Punch {
     }
 
     /**
-     *
+     * Fetches the terminal id as an int
      * @return the terminal id as an int
      */
     public int getTerminalid() {
@@ -144,7 +147,7 @@ public class Punch {
     }
 
     /**
-     *
+     * Fetches the punch type id as an int
      * @return the punch type id as an int
      */
     public int getPunchtypeid() {
@@ -152,7 +155,7 @@ public class Punch {
     }
 
     /**
-     *
+     * Fetches the id as an int
      * @return the id as an int
      */
     public int getId() {
@@ -160,8 +163,8 @@ public class Punch {
     }
 
     /**
-     *
-     * @return the original timestamp a long
+     * Fetches the original timestamp as a long
+     * @return the original timestamp as a  long
      */
     public long getOriginaltimestamp() {
         return originalTimeStamp.getTime();
@@ -169,7 +172,7 @@ public class Punch {
     }
     
     /**
-     * 
+     * Fetches the adjust message as a String
      * @return the adjust message as a String
      */
     public String getAdjustMessage(){
@@ -178,7 +181,7 @@ public class Punch {
     }
     
     /**
-     *
+     * Fetches the original timestamp as a Timestamp
      * @return the original timestamp as a Timestamp
      */
     public Timestamp getOriginaltimestamp2() {
@@ -196,7 +199,7 @@ public class Punch {
     // Setter Methods
 
     /**
-     *
+     * Sets the badge id of a specific employee
      * @param badgeID a String that represents the id of a specific badge
      */
     
@@ -205,7 +208,7 @@ public class Punch {
     }
 
     /**
-     *
+     * Sets the terminal id of a specific punch
      * @param terminalID an int that represents which terminal a punch was made
      */
     public void setTerminalID(int terminalID) {
@@ -213,7 +216,8 @@ public class Punch {
     }
 
     /**
-     *
+     * Sets the specific type of a punch whether it is a clock in or clock out
+     * or time out
      * @param punchTypeID an int that represents whether someone clocked in or 
      * out of a shift or timed out of a shift
      */
@@ -222,7 +226,7 @@ public class Punch {
     }
 
     /**
-     *
+     * Sets the id of a punch in the database
      * @param id an int that represents the id of a punch
      */
     public void setId(int id) {
@@ -230,7 +234,7 @@ public class Punch {
     }
 
     /**
-     *
+     * Sets the original timestamp of a punch
      * @param originalTimeStamp a Timestamp that represents the time a punch was
      * made
      */
@@ -258,7 +262,7 @@ public class Punch {
     
 
     /**
-     *
+     * Sets the the adjustment for a shift by using a specific shift
      * @param s a Shift that represents the shift that should be adjusted
      */
     public void adjust(Shift s){

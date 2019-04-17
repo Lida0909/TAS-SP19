@@ -42,7 +42,7 @@ public class Shift {
      * @param lunchDeduct an int that represents the number of minutes you have
      * to work during a day
      */
-    public Shift(String description, int startHour, int startMin,int interval, int gracePeriod,
+    public Shift(String description, int startHour, int startMin, int interval, int gracePeriod,
             int dock, int stopHour, int stopMin, int lunchStartHour, int lunchStartMin,
             int lunchStopHour, int lunchStopMin, int lunchDeduct) {
         
