@@ -754,7 +754,7 @@ public class TASDatabase {
     }
     
     /**
-     * 
+     * Fetches a timestamp from the database and adjusts it
      * @param timestamp a long that represents the amount of milliseconds of a 
      * timestamp 
      * @return a long that returns the adjusted timestamp in milliseconds
@@ -849,7 +849,8 @@ public class TASDatabase {
     }
     
     /**
-     * 
+     * Fetches the absenteeism by using a specific badge id and timestamp from
+     * the database
      * @param badgeid a String object that represents the employee's badge id
      * @param timestamp a long that represents the amount of milliseconds from
      * a timestamp 
