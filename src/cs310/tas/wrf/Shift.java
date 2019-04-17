@@ -1,6 +1,8 @@
 package cs310.tas.wrf;
 
 import java.time.LocalTime;
+import java.util.Calendar;
+import java.util.HashMap;
 
 /**
  * The Shift class is an abstraction of a shift. This class is used to determine 
@@ -9,9 +11,11 @@ import java.time.LocalTime;
  * @author War Room F
  */
 
+   
 public class Shift {
     
     private DailySchedule defaultschedule;
+    private HashMap dailyList;
     private String description; 
     private int id;
     /*private LocalTime startingTime;
@@ -25,31 +29,19 @@ public class Shift {
     private int dock;
     */
     
-    /**
-     * Sets the description, start hour, start minute, interval, grace period,
-     * dock, stop hour, stop minute, lunch start hour, lunch start minute, lunch
-     * stop hour, lunch stop minute, and lunch deduct
-     * @param description a String that represents the shift type
-     * @param startHour an int that represents the start hour of the shift
-     * @param startMin an int that represents the start minute of the shift
-     * @param interval an int that represents the number of minutes that will
-     * be adjusted before and after a shift
-     * @param gracePeriod an int that represents the grace period for a shift
-     * @param dock an int that represents the dock period for a shift
-     * @param stopHour an int that represents the stop hour of a shift
-     * @param stopMin an int that represents the stop minute of a shift
-     * @param lunchStartHour an int that represents the hour the lunch starts
-     * @param lunchStartMin an int that represents the minute the lunch starts
-     * @param lunchStopHour an int that represents the hour the lunch stops
-     * @param lunchStopMin an int that represents the minute the lunch stops
-     * @param lunchDeduct an int that represents the number of minutes you have
-     * to work during a day
-     */
     public Shift(String description, int id, DailySchedule defaultschedule) {
-        
+        this.dailyList = new HashMap<Integer, DailySchedule>();
         this.description = description;
         this.id = id;
         this.defaultschedule = defaultschedule;
+        
+        dailyList.put(Calendar.MONDAY, defaultschedule);
+        dailyList.put(Calendar.TUESDAY, defaultschedule);
+        dailyList.put(Calendar.WEDNESDAY, defaultschedule);
+        dailyList.put(Calendar.THURSDAY, defaultschedule);
+        dailyList.put(Calendar.FRIDAY, defaultschedule);
+        
+        
         /*this.startingTime = LocalTime.of(startHour, startMin);
         this.stoppingTime = LocalTime.of(stopHour, stopMin);
         this.lunchStart = LocalTime.of(lunchStartHour, lunchStartMin);
@@ -65,6 +57,20 @@ public class Shift {
             //int lunchStopHour, int lunchStopMin, int lunchDeduct
     
     /* Getter Methods */
+    
+    public DailySchedule getDailySchedule(int day){
+        return (DailySchedule) dailyList.get(day);
+    }
+    
+    public void setDailySchecule(DailySchedule ds, int day){
+        this.dailyList.put(day, ds);
+    }
+    
+    public int getStartingTimeHour(int day) {
+        DailySchedule ds = (DailySchedule) dailyList.get(day);
+        return ds.getShiftStart().getHour();
+    }
+    
     
     /**
      * Fetches the starting time of a specific shift

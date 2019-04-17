@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Date;
 
 /**
  * The TASDatabase class is used by the TAS to connect to the database
@@ -489,7 +490,7 @@ public class TASDatabase {
                     resultset = pstSelect.getResultSet();
                     
                     resultset.next();
-   
+                    //call to get shift with a shift ID
                     s = getShift(resultset.getInt(1));    
 
                     }
@@ -518,6 +519,25 @@ public class TASDatabase {
         return s;
         
     }
+    
+    public Shift getShift(Badge b, long ts){
+
+        Shift s = getShift(b);
+
+        /*
+        INSERT ALL THE SQLZ YO
+        
+        */
+        
+        
+        Date d = new Date(ts);
+        d.getDay();
+        
+        s.setDailySchecule(get);
+        
+        return s;
+    }
+    
     
     /**
      * Inserts a new Punch into the database.
