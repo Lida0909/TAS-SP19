@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * The TASDatabase class is used by the TAS to connect to the database
@@ -286,14 +287,8 @@ public class TASDatabase {
         Punch p = new Punch(id, terminalID, badgeID, originalTimestamp, punchTypeID);
         return p;
     }
-    
-    /**
-     * Retrieves a Shift from the database.
-     * @param shiftID an int that represents the ID number of a Shift
-     * @return a new Shift object created from the database information based
-     * on the given shiftID
-     */
-    public Shift getShift(int shiftID) {
+
+        public DailySchedule getDailySchedule(int dsID) {
         
         int id = 0;
         String description = null; 
@@ -311,7 +306,7 @@ public class TASDatabase {
         
             /* Prepare Select Query */           
 
-            query = "SELECT * FROM dailyschedule where id = '" + shiftID + "'";
+            query = "SELECT * FROM dailyschedule where id = '" + dsID + "'";
 
             pstSelect = conn.prepareStatement(query);
                 
@@ -373,6 +368,7 @@ public class TASDatabase {
         catch (Exception e) {
             
             System.err.println(e.toString());
+            System.out.println("catch during getDailySchedule(int dsID)");
             
         }
         
@@ -400,10 +396,133 @@ public class TASDatabase {
         int lunchStopHour = Integer.parseInt(lunchStop[0]);
         int lunchStopMinute = Integer.parseInt(lunchStop[1]);
        
-        DailySchedule dailyschedule = new DailySchedule(shiftStartHour, shiftStartMinute,
+        DailySchedule dailySchedule = new DailySchedule(shiftStartHour, shiftStartMinute,
                 shiftStopHour, shiftStopMinute,interval, gracePeriod, dock, lunchStartHour, 
                 lunchStartMinute, lunchStopHour,lunchStopMinute, lunchDeduct);
         
+        return dailySchedule;
+        }
+    
+    /**
+     * Retrieves a Shift from the database.
+     * @param shiftID an int that represents the ID number of a Shift
+     * @return a new Shift object created from the database information based
+     * on the given shiftID
+     */
+    public Shift getShift(int shiftID) {
+        
+        int id = 0;
+        String description = null; 
+        String[] startingTime = null;
+        String[] stoppingTime = null;
+        String[] lunchStart = null;
+        String[] lunchStop = null;
+
+        int lunchDeduct = 0;
+        int interval = 0;
+        int gracePeriod = 0;
+        int dock = 0;
+        
+        
+        DailySchedule defaultSchedule = getDailySchedule(shiftID);
+/*        
+        try {
+        
+            // Prepare Select Query 
+
+            query = "SELECT * FROM dailyschedule where id = '" + shiftID + "'";
+
+            pstSelect = conn.prepareStatement(query);
+                
+            // Execute Select Query 
+                
+            System.out.println("Submitting Query ...");
+                
+            hasresults = pstSelect.execute();                
+            resultset = pstSelect.getResultSet();
+            metadata = resultset.getMetaData();
+            columnCount = metadata.getColumnCount();
+            
+            // Get Results 
+                
+            System.out.println("Getting Results ...");
+                
+            while ( hasresults || pstSelect.getUpdateCount() != -1 ) {
+
+                if ( hasresults ) {
+                        
+                    // Get ResultSet 
+                        
+                    resultset = pstSelect.getResultSet();
+                    
+                    while(resultset.next()) {
+                        
+                       //description = resultset.getString(1);
+                       startingTime = resultset.getTime(2).toString().split(":");
+                       stoppingTime = resultset.getTime(3).toString().split(":");
+                       interval = resultset.getInt(4);
+                       gracePeriod = resultset.getInt(5);  
+                       dock = resultset.getInt(6);
+                       lunchStart = resultset.getTime(7).toString().split(":");
+                       lunchStop = resultset.getTime(8).toString().split(":");
+                       lunchDeduct = resultset.getInt(9);
+                       
+                    }
+                        
+                }
+
+                else {
+
+                    resultCount = pstSelect.getUpdateCount();  
+
+                    if ( resultCount == -1 ) {
+                        break;
+                    }
+                        
+                }
+                   
+                // Check for More Data 
+
+                hasresults = pstSelect.getMoreResults();
+
+            }
+
+        }
+        
+        catch (Exception e) {
+            
+            System.err.println(e.toString());
+            
+        }
+        
+        // Close Other Database Objects 
+        
+        finally {
+            
+            if (resultset != null) { try { resultset.close(); resultset = null; 
+            } catch (Exception e) {} }
+            
+            if (pstSelect != null) { try { pstSelect.close(); pstSelect = null; 
+            } catch (Exception e) {} }
+            
+            if (pstUpdate != null) { try { pstUpdate.close(); pstUpdate = null; 
+            } catch (Exception e) {} }
+            
+        }
+        
+        int shiftStartHour = Integer.parseInt(startingTime[0]);
+        int shiftStartMinute = Integer.parseInt(startingTime[1]);
+        int shiftStopHour = Integer.parseInt(stoppingTime[0]);
+        int shiftStopMinute = Integer.parseInt(stoppingTime[1]);
+        int lunchStartHour = Integer.parseInt(lunchStart[0]);
+        int lunchStartMinute = Integer.parseInt(lunchStart[1]);
+        int lunchStopHour = Integer.parseInt(lunchStop[0]);
+        int lunchStopMinute = Integer.parseInt(lunchStop[1]);
+       
+        DailySchedule dailyschedule = new DailySchedule(shiftStartHour, shiftStartMinute,
+                shiftStopHour, shiftStopMinute,interval, gracePeriod, dock, lunchStartHour, 
+                lunchStartMinute, lunchStopHour,lunchStopMinute, lunchDeduct);
+        */
         try {
         
             /* Prepare Select Query */
@@ -449,7 +568,7 @@ public class TASDatabase {
             
         }
         
-        Shift s = new Shift(description, id, dailyschedule);
+        Shift s = new Shift(description, id, defaultSchedule);
         System.out.println(s.toString());
         return s;
         
@@ -521,19 +640,221 @@ public class TASDatabase {
     }
     
     public Shift getShift(Badge b, long ts){
-
+        ResultSet recurring_all;
+        ResultSet recurring_this;
+        ResultSet temporary_all;
+        ResultSet temporary_this;
         Shift s = getShift(b);
-
-        /*
-        INSERT ALL THE SQLZ YO
+        HashMap exceptions = new HashMap<Integer, DailySchedule>();
         
+        /*
+       SQL
         */
+        
+        
+        //get recurring overrides for all employees
+        try {
+        
+            /* Prepare Select Query */
+            //select recurring overrides for all employees.
+            query = "SELECT * FROM scheduleoverride WHERE badgeid is null and end is null";
+            pstSelect = conn.prepareStatement(query);
+                
+            /* Execute Select Query */
+
+            hasresults = pstSelect.execute();                
+            resultset = pstSelect.getResultSet();
+            metadata = resultset.getMetaData();
+            columnCount = metadata.getColumnCount(); 
+
+            /* Get ResultSet */
+
+            resultset = pstSelect.getResultSet();                    
+            recurring_all = resultset;
+            
+            /*
+            while(resultset.next()) {
+                
+                //id = resultset.getInt(1);
+                //description = resultset.getString(2);
+            }*/
+        }        
+        
+        catch (Exception e) {
+            
+            System.err.println(e.toString());
+            
+        }
+        
+        /* Close Other Database Objects */
+        
+        finally {
+            
+            if (resultset != null) { try { resultset.close(); resultset = null; 
+            } catch (Exception e) {} }
+            
+            if (pstSelect != null) { try { pstSelect.close(); pstSelect = null; 
+            } catch (Exception e) {} }
+            
+            if (pstUpdate != null) { try { pstUpdate.close(); pstUpdate = null; 
+            } catch (Exception e) {} }
+            
+        }
+        try {
+        
+            /* Prepare Select Query */
+            //select recurring overrides for this employee.
+            query = "SELECT * FROM scheduleoverride WHERE badgeid is '" + b.getBadgeid() + "' and end is null";
+            pstSelect = conn.prepareStatement(query);
+                
+            /* Execute Select Query */
+
+            hasresults = pstSelect.execute();                
+            resultset = pstSelect.getResultSet();
+            metadata = resultset.getMetaData();
+            columnCount = metadata.getColumnCount(); 
+
+            /* Get ResultSet */
+
+            resultset = pstSelect.getResultSet();                    
+            recurring_this = resultset;
+            
+            /*
+            while(resultset.next()) {
+                
+                //id = resultset.getInt(1);
+                //description = resultset.getString(2);
+            }*/
+        }        
+        
+        catch (Exception e) {
+            
+            System.err.println(e.toString());
+            
+        }
+        
+        /* Close Other Database Objects */
+        
+        finally {
+            
+            if (resultset != null) { try { resultset.close(); resultset = null; 
+            } catch (Exception e) {} }
+            
+            if (pstSelect != null) { try { pstSelect.close(); pstSelect = null; 
+            } catch (Exception e) {} }
+            
+            if (pstUpdate != null) { try { pstUpdate.close(); pstUpdate = null; 
+            } catch (Exception e) {} }
+            
+        }
+        
+        try {
+        
+            /* Prepare Select Query */
+            //select temporary overrides for all employees.
+            //REPLACE 'val' WITH THE TIME STAMP IN A FORMAT THAT SQL CAN UNDERSTAND.
+            //can val just be left as a long integer??
+            query = "SELECT * FROM scheduleoverride where start <= convert(long, " + ts + ") and convert(long, " + ts + ") <= end and badgeid is null;";
+            pstSelect = conn.prepareStatement(query);
+                
+            /* Execute Select Query */
+
+            hasresults = pstSelect.execute();                
+            resultset = pstSelect.getResultSet();
+            metadata = resultset.getMetaData();
+            columnCount = metadata.getColumnCount(); 
+
+            /* Get ResultSet */
+
+            resultset = pstSelect.getResultSet();                    
+            temporary_all = resultset;
+            
+            /*
+            while(resultset.next()) {
+                
+                //id = resultset.getInt(1);
+                //description = resultset.getString(2);
+            }*/
+        }        
+        
+        catch (Exception e) {
+            
+            System.err.println(e.toString());
+            
+        }
+        
+        /* Close Other Database Objects */
+        
+        finally {
+            
+            if (resultset != null) { try { resultset.close(); resultset = null; 
+            } catch (Exception e) {} }
+            
+            if (pstSelect != null) { try { pstSelect.close(); pstSelect = null; 
+            } catch (Exception e) {} }
+            
+            if (pstUpdate != null) { try { pstUpdate.close(); pstUpdate = null; 
+            } catch (Exception e) {} }
+            
+        }
+        try {
+        
+            /* Prepare Select Query */
+            //select temporary overrides for this employees.
+            //REPLACE 'val' WITH THE TIME STAMP IN A FORMAT THAT SQL CAN UNDERSTAND.
+            //can val just be left as a long integer??
+            query = "SELECT * FROM scheduleoverride where start <= convert(long, " + ts + ") and convert(long, " + ts + ") <= end; and badgeid = '" + b.getBadgeid() + "';";
+            pstSelect = conn.prepareStatement(query);
+                
+            /* Execute Select Query */
+
+            hasresults = pstSelect.execute();                
+            resultset = pstSelect.getResultSet();
+            metadata = resultset.getMetaData();
+            columnCount = metadata.getColumnCount(); 
+
+            /* Get ResultSet */
+
+            resultset = pstSelect.getResultSet();                    
+            temporary_this = resultset;
+            
+            /*
+            while(resultset.next()) {
+                
+                //id = resultset.getInt(1);
+                //description = resultset.getString(2);
+            }*/
+        }        
+        
+        catch (Exception e) {
+            
+            System.err.println(e.toString());
+            
+        }
+        
+        /* Close Other Database Objects */
+        
+        finally {
+            
+            if (resultset != null) { try { resultset.close(); resultset = null; 
+            } catch (Exception e) {} }
+            
+            if (pstSelect != null) { try { pstSelect.close(); pstSelect = null; 
+            } catch (Exception e) {} }
+            
+            if (pstUpdate != null) { try { pstUpdate.close(); pstUpdate = null; 
+            } catch (Exception e) {} }
+            
+        }
+        
         
         
         Date d = new Date(ts);
         d.getDay();
         
-        s.setDailySchecule(get);
+        
+        
+        //s.setDailySchecule();
         
         return s;
     }
