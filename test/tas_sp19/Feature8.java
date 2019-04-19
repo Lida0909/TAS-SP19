@@ -45,7 +45,6 @@ public class Feature8 {
         Shift s = db.getShift(b, gc.getTimeInMillis());
         
         /* Retrieve Punch List #1 */
-        
         ArrayList<Punch> p1 = db.getPayPeriodPunchList(b, gc.getTimeInMillis());
         
         /* Adjust Punches */
@@ -240,6 +239,7 @@ public class Feature8 {
         
         /* Create Timestamp and Badge Objects */
         
+        System.out.println("DEBUG-NULL POINTER");
         GregorianCalendar gc = new GregorianCalendar();
         Badge b = db.getBadge("3282F212");
         

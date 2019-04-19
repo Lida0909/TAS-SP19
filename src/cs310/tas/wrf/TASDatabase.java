@@ -322,7 +322,7 @@ public class TASDatabase {
             /* Get Results */
                 
             System.out.println("Getting Results ...");
-                
+             
             while ( hasresults || pstSelect.getUpdateCount() != -1 ) {
 
                 if ( hasresults ) {
@@ -568,6 +568,7 @@ public class TASDatabase {
             
         }
         
+        
         Shift s = new Shift(description, id, defaultSchedule);
         System.out.println(s.toString());
         return s;
@@ -640,12 +641,16 @@ public class TASDatabase {
     }
     
     public Shift getShift(Badge b, long ts){
-        ResultSet recurring_all;
-        ResultSet recurring_this;
-        ResultSet temporary_all;
-        ResultSet temporary_this;
+        //ResultSet recurring_all;
+        //ResultSet recurring_this;
+        //ResultSet temporary_all;
+        //ResultSet temporary_this;
         Shift s = getShift(b);
         HashMap exceptions = new HashMap<Integer, DailySchedule>();
+        Date dateValue = new Date(ts);
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+        String dateString = sdf.format(dateValue);
         
         /*
        SQL
@@ -657,7 +662,8 @@ public class TASDatabase {
         
             /* Prepare Select Query */
             //select recurring overrides for all employees.
-            query = "SELECT * FROM scheduleoverride WHERE badgeid is null and end is null";
+            System.out.println("DEBUG-A");
+            query = "SELECT * FROM scheduleoverride WHERE badgeid is null and end is null;";
             pstSelect = conn.prepareStatement(query);
                 
             /* Execute Select Query */
@@ -670,14 +676,16 @@ public class TASDatabase {
             /* Get ResultSet */
 
             resultset = pstSelect.getResultSet();                    
-            recurring_all = resultset;
+            //recurring_all = resultset;
             
-            /*
+            
             while(resultset.next()) {
                 
-                //id = resultset.getInt(1);
-                //description = resultset.getString(2);
-            }*/
+               int day = resultset.getInt(5);
+               DailySchedule ds = getDailySchedule(resultset.getInt(6));
+               s.setDailySchecule(ds, day);
+            }
+            
         }        
         
         catch (Exception e) {
@@ -704,7 +712,8 @@ public class TASDatabase {
         
             /* Prepare Select Query */
             //select recurring overrides for this employee.
-            query = "SELECT * FROM scheduleoverride WHERE badgeid is '" + b.getBadgeid() + "' and end is null";
+            System.out.println("DEBUG-B");
+            query = "SELECT * FROM scheduleoverride WHERE badgeid = '" + b.getBadgeid() + "' and end is null;";
             pstSelect = conn.prepareStatement(query);
                 
             /* Execute Select Query */
@@ -717,14 +726,15 @@ public class TASDatabase {
             /* Get ResultSet */
 
             resultset = pstSelect.getResultSet();                    
-            recurring_this = resultset;
+            //recurring_this = resultset;
             
-            /*
+            
             while(resultset.next()) {
                 
-                //id = resultset.getInt(1);
-                //description = resultset.getString(2);
-            }*/
+                int day = resultset.getInt(5);
+                DailySchedule ds = getDailySchedule(resultset.getInt(6));
+                s.setDailySchecule(ds, day);
+            }
         }        
         
         catch (Exception e) {
@@ -754,7 +764,8 @@ public class TASDatabase {
             //select temporary overrides for all employees.
             //REPLACE 'val' WITH THE TIME STAMP IN A FORMAT THAT SQL CAN UNDERSTAND.
             //can val just be left as a long integer??
-            query = "SELECT * FROM scheduleoverride where start <= convert(long, " + ts + ") and convert(long, " + ts + ") <= end and badgeid is null;";
+            System.out.println("DEBUG-C");
+            query = "SELECT * FROM scheduleoverride where start <= '" + dateString + "' and '" + dateString + "' <= end and badgeid is null;";
             pstSelect = conn.prepareStatement(query);
                 
             /* Execute Select Query */
@@ -767,14 +778,15 @@ public class TASDatabase {
             /* Get ResultSet */
 
             resultset = pstSelect.getResultSet();                    
-            temporary_all = resultset;
+            //temporary_all = resultset;
             
-            /*
+            
             while(resultset.next()) {
                 
-                //id = resultset.getInt(1);
-                //description = resultset.getString(2);
-            }*/
+                int day = resultset.getInt(5);
+                DailySchedule ds = getDailySchedule(resultset.getInt(6));
+                s.setDailySchecule(ds, day);
+            }
         }        
         
         catch (Exception e) {
@@ -803,11 +815,12 @@ public class TASDatabase {
             //select temporary overrides for this employees.
             //REPLACE 'val' WITH THE TIME STAMP IN A FORMAT THAT SQL CAN UNDERSTAND.
             //can val just be left as a long integer??
-            query = "SELECT * FROM scheduleoverride where start <= convert(long, " + ts + ") and convert(long, " + ts + ") <= end; and badgeid = '" + b.getBadgeid() + "';";
+            System.out.println("DEBUG-D");
+            query = "SELECT * FROM scheduleoverride WHERE badgeid='" + b.getBadgeid() + "' and start <= '" + dateString + "' and '" + dateString + "' <= end;";
             pstSelect = conn.prepareStatement(query);
-                
             /* Execute Select Query */
 
+            System.out.println("" + b.getBadgeid());      
             hasresults = pstSelect.execute();                
             resultset = pstSelect.getResultSet();
             metadata = resultset.getMetaData();
@@ -816,14 +829,17 @@ public class TASDatabase {
             /* Get ResultSet */
 
             resultset = pstSelect.getResultSet();                    
-            temporary_this = resultset;
+            //temporary_this = resultset;
             
-            /*
-            while(resultset.next()) {
-                
-                //id = resultset.getInt(1);
-                //description = resultset.getString(2);
-            }*/
+            System.out.println(hasresults);
+            if(hasresults){
+                while(resultset.next()) {
+                    System.out.println(resultset.getInt(5));
+                    int day = resultset.getInt(5);
+                    DailySchedule ds = getDailySchedule(resultset.getInt(6));
+                    s.setDailySchecule(ds, day);
+                }
+            }
         }        
         
         catch (Exception e) {
@@ -836,25 +852,37 @@ public class TASDatabase {
         
         finally {
             
-            if (resultset != null) { try { resultset.close(); resultset = null; 
+            if (resultset != null) { 
+                try { 
+                    resultset.close();
+                    resultset = null; 
             } catch (Exception e) {} }
             
-            if (pstSelect != null) { try { pstSelect.close(); pstSelect = null; 
+            if (pstSelect != null) { 
+                try { 
+                    pstSelect.close(); 
+                    pstSelect = null; 
+                    
             } catch (Exception e) {} }
             
-            if (pstUpdate != null) { try { pstUpdate.close(); pstUpdate = null; 
+            if (pstUpdate != null) { 
+                try { 
+                    pstUpdate.close(); 
+                    pstUpdate = null;
+                    
             } catch (Exception e) {} }
             
         }
         
         
-        
+        /*
         Date d = new Date(ts);
         d.getDay();
-        
+        */
         
         
         //s.setDailySchecule();
+        
         
         return s;
     }
