@@ -26,6 +26,7 @@ public class Feature8 {
     @Test
     public void testTemporaryOverrideAllEmployees() {
         
+        System.out.println("DEBUG-NULL POINTER");
         /* Create Timestamp and Badge Objects */
         
         GregorianCalendar gc = new GregorianCalendar();
@@ -239,7 +240,6 @@ public class Feature8 {
         
         /* Create Timestamp and Badge Objects */
         
-        System.out.println("DEBUG-NULL POINTER");
         GregorianCalendar gc = new GregorianCalendar();
         Badge b = db.getBadge("3282F212");
         

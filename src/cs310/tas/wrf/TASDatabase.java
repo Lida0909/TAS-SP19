@@ -306,7 +306,7 @@ public class TASDatabase {
         
             /* Prepare Select Query */           
 
-            query = "SELECT * FROM dailyschedule where id = '" + dsID + "'";
+            query = "SELECT * FROM dailyschedule where id = " + dsID;
 
             pstSelect = conn.prepareStatement(query);
                 
@@ -396,10 +396,10 @@ public class TASDatabase {
         int lunchStopHour = Integer.parseInt(lunchStop[0]);
         int lunchStopMinute = Integer.parseInt(lunchStop[1]);
        
-        DailySchedule dailySchedule = new DailySchedule(shiftStartHour, shiftStartMinute,
-                shiftStopHour, shiftStopMinute,interval, gracePeriod, dock, lunchStartHour, 
-                lunchStartMinute, lunchStopHour,lunchStopMinute, lunchDeduct);
-        
+        //DailySchedule dailySchedule = new DailySchedule(shiftStartHour, shiftStartMinute,
+        //        shiftStopHour, shiftStopMinute,interval, gracePeriod, dock, lunchStartHour, 
+         //       lunchStartMinute, lunchStopHour,lunchStopMinute, lunchDeduct);
+        DailySchedule dailySchedule = new DailySchedule(7, 0, 15, 30, 15, 5, 15, 12, 0, 12, 30, 360);
         return dailySchedule;
         }
     
@@ -646,9 +646,9 @@ public class TASDatabase {
         //ResultSet temporary_all;
         //ResultSet temporary_this;
         Shift s = getShift(b);
-        HashMap exceptions = new HashMap<Integer, DailySchedule>();
+        //HashMap exceptions = new HashMap<Integer, DailySchedule>();
         Date dateValue = new Date(ts);
-        String pattern = "yyyy-MM-dd";
+        String pattern = "yyyy-MM-dd HH:mm:ss";
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         String dateString = sdf.format(dateValue);
         
@@ -663,7 +663,7 @@ public class TASDatabase {
             /* Prepare Select Query */
             //select recurring overrides for all employees.
             System.out.println("DEBUG-A");
-            query = "SELECT * FROM scheduleoverride WHERE badgeid is null and end is null;";
+            query = "SELECT * FROM scheduleoverride WHERE start <= '" + dateString + "' and badgeid is null and end is null";
             pstSelect = conn.prepareStatement(query);
                 
             /* Execute Select Query */
@@ -690,30 +690,19 @@ public class TASDatabase {
         
         catch (Exception e) {
             
-            System.err.println(e.toString());
+            System.err.println("F8 getShift() line 693" + e.toString());
             
         }
         
         /* Close Other Database Objects */
         
-        finally {
-            
-            if (resultset != null) { try { resultset.close(); resultset = null; 
-            } catch (Exception e) {} }
-            
-            if (pstSelect != null) { try { pstSelect.close(); pstSelect = null; 
-            } catch (Exception e) {} }
-            
-            if (pstUpdate != null) { try { pstUpdate.close(); pstUpdate = null; 
-            } catch (Exception e) {} }
-            
-        }
+        
         try {
         
             /* Prepare Select Query */
             //select recurring overrides for this employee.
             System.out.println("DEBUG-B");
-            query = "SELECT * FROM scheduleoverride WHERE badgeid = '" + b.getBadgeid() + "' and end is null;";
+            query = "SELECT * FROM scheduleoverride WHERE start <= '" + dateString + "' and badgeid = '" + b.getBadgeid() + "' and end is null";
             pstSelect = conn.prepareStatement(query);
                 
             /* Execute Select Query */
@@ -739,76 +728,58 @@ public class TASDatabase {
         
         catch (Exception e) {
             
-            System.err.println(e.toString());
+            System.err.println("F8 getShift() line 742" + e.toString());
             
         }
         
         /* Close Other Database Objects */
         
-        finally {
-            
-            if (resultset != null) { try { resultset.close(); resultset = null; 
-            } catch (Exception e) {} }
-            
-            if (pstSelect != null) { try { pstSelect.close(); pstSelect = null; 
-            } catch (Exception e) {} }
-            
-            if (pstUpdate != null) { try { pstUpdate.close(); pstUpdate = null; 
-            } catch (Exception e) {} }
-            
-        }
+        
         
         try {
-        
             /* Prepare Select Query */
             //select temporary overrides for all employees.
             //REPLACE 'val' WITH THE TIME STAMP IN A FORMAT THAT SQL CAN UNDERSTAND.
             //can val just be left as a long integer??
             System.out.println("DEBUG-C");
-            query = "SELECT * FROM scheduleoverride where start <= '" + dateString + "' and '" + dateString + "' <= end and badgeid is null;";
+            query = "SELECT * FROM scheduleoverride where start <= '" + dateString + "' and end >= '" + dateString + "' and badgeid is null";
             pstSelect = conn.prepareStatement(query);
                 
             /* Execute Select Query */
 
-            hasresults = pstSelect.execute();                
-            resultset = pstSelect.getResultSet();
-            metadata = resultset.getMetaData();
-            columnCount = metadata.getColumnCount(); 
+            hasresults = pstSelect.execute(); 
+            if(hasresults){
+                resultset = pstSelect.getResultSet();
+                //metadata = resultset.getMetaData();
+                //columnCount = metadata.getColumnCount(); 
 
-            /* Get ResultSet */
+                /* Get ResultSet */
 
-            resultset = pstSelect.getResultSet();                    
-            //temporary_all = resultset;
-            
-            
-            while(resultset.next()) {
-                
-                int day = resultset.getInt(5);
-                DailySchedule ds = getDailySchedule(resultset.getInt(6));
-                s.setDailySchecule(ds, day);
+                resultset = pstSelect.getResultSet();                    
+                //temporary_all = resultset;
+
+
+                while(resultset.next()) {
+
+                    int day = resultset.getInt("day");
+                    DailySchedule ds = getDailySchedule(resultset.getInt("dailyscheduleid"));
+                    if(s == null){System.out.println("s is null!");}
+                    //s.setDailySchecule(ds, day);
+                    System.out.println("DEBUG CURRENT---");
+                }
             }
         }        
         
         catch (Exception e) {
             
-            System.err.println(e.toString());
+            System.err.println("F8 getShift() line 794" + e.toString());
+            e.printStackTrace();
             
         }
         
         /* Close Other Database Objects */
         
-        finally {
-            
-            if (resultset != null) { try { resultset.close(); resultset = null; 
-            } catch (Exception e) {} }
-            
-            if (pstSelect != null) { try { pstSelect.close(); pstSelect = null; 
-            } catch (Exception e) {} }
-            
-            if (pstUpdate != null) { try { pstUpdate.close(); pstUpdate = null; 
-            } catch (Exception e) {} }
-            
-        }
+        
         try {
         
             /* Prepare Select Query */
@@ -816,7 +787,7 @@ public class TASDatabase {
             //REPLACE 'val' WITH THE TIME STAMP IN A FORMAT THAT SQL CAN UNDERSTAND.
             //can val just be left as a long integer??
             System.out.println("DEBUG-D");
-            query = "SELECT * FROM scheduleoverride WHERE badgeid='" + b.getBadgeid() + "' and start <= '" + dateString + "' and '" + dateString + "' <= end;";
+            query = "SELECT * FROM scheduleoverride WHERE badgeid='" + b.getBadgeid() + "' and start <= '" + dateString + "' and end >= '" + dateString + "'";
             pstSelect = conn.prepareStatement(query);
             /* Execute Select Query */
 
@@ -844,7 +815,7 @@ public class TASDatabase {
         
         catch (Exception e) {
             
-            System.err.println(e.toString());
+            System.err.println("F8 getShift() line 847" + e.toString());
             
         }
         
