@@ -14,7 +14,7 @@
    This project has **7** features which are listed below,
    
    1. Feature 1
-      This feature creates Shift, Punch, Database, Badge classes. It implements these classes and their methods.
+      - This feature creates Shift, Punch, Database, Badge classes. It implements these classes and their methods.
       
    2. Feature 2
    
